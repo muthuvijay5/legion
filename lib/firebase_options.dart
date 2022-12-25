@@ -66,7 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '730042238274',
     projectId: 'legion-psg-flutter',
     storageBucket: 'legion-psg-flutter.appspot.com',
-    iosClientId: '730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com',
+    iosClientId:
+        '730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com',
     iosBundleId: 'com.example.legion',
   );
 
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '730042238274',
     projectId: 'legion-psg-flutter',
     storageBucket: 'legion-psg-flutter.appspot.com',
-    iosClientId: '730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com',
+    iosClientId:
+        '730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com',
     iosBundleId: 'com.example.legion',
   );
 }

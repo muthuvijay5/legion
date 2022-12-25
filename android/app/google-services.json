@@ -29,13 +29,6 @@
             {
               "client_id": "730042238274-67r9jbm32pf6tjldd716p5o7e6rc4tnr.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.legion"
-              }
             }
           ]
         }
