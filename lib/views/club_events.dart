@@ -35,7 +35,7 @@ class _ClubEventsPage extends State<ClubEventsPage> {
                         title: event['title'],
                         posterImgLink: event['posterImgLink'],
                         desc: event['desc'],
-                        phoneNumber: event['phoneNumber'],
+                        phoneNumber: event['phoneNumber'].cast<String>(),
                       );
                     })));
               }
@@ -50,7 +50,7 @@ class _ClubEventsPage extends State<ClubEventsPage> {
 class Event extends StatelessWidget {
   final String posterImgLink;
   final String desc;
-  final String phoneNumber;
+  final List<String> phoneNumber;
   final String title;
   const Event(
       {Key? key,
@@ -93,7 +93,7 @@ class Event extends StatelessWidget {
 class EventPage extends StatelessWidget {
   final String photo;
   final String description;
-  final String phone;
+  final List<String> phone;
   const EventPage(
       {Key? key,
       required this.photo,
@@ -108,10 +108,20 @@ class EventPage extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(5),
                 child: Image.network(photo, fit: BoxFit.cover)),
-            Text(description),
-            CallButton(phoneNumber: phone)
+            Padding(
+                padding: const EdgeInsets.all(10), child: Text(description)),
+            ListView.separated(
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(height: 3);
+              },
+              shrinkWrap: true,
+              itemCount: phone.length,
+              itemBuilder: (context, index) {
+                return CallButton(phoneNumber: phone[index]);
+              },
+            )
           ],
         ),
       ),
