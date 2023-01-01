@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
 
 class CircularPage extends StatefulWidget {
   const CircularPage({Key? key}) : super(key: key);
@@ -8,41 +10,30 @@ class CircularPage extends StatefulWidget {
 }
 
 class _CircularPageState extends State<CircularPage> {
-  // final databaseReference = FirebaseDatabase.instance.reference();
-  // void getValues() {
-  //   databaseReference.once().then((DataSnapshot snapshot) {
-  //     print('Data : ${snapshot.value}');
-  //   });
-  // }
-
-  List<String> urls = [
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-    "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-  ];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Expanded(
-        child: ListView.builder(
-            itemCount: urls.length,
-            itemBuilder: (BuildContext context, int index) {
-              return CircularRedirector(
-                photo: urls[index],
-                date: DateTime.now(),
-              );
-            }),
-      ),
-    ));
+            child: Expanded(
+      child: StreamBuilder<QuerySnapshot>(
+          stream: firestore.collection("circulars").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Text("please wait");
+            } else {
+              log('${snapshot.data!.docs.length}');
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (((context, index) {
+                    DocumentSnapshot circular = snapshot.data!.docs[index];
+                    return CircularRedirector(
+                        photo: circular["imgLink"], date: DateTime.now());
+                  })));
+            }
+          }),
+    )));
   }
 }
 
