@@ -208,4 +208,23 @@ class FirebaseMethods {
       return false;
     });
   }
+
+  Future<List<dynamic>> getYrAndDept(String mail) async {
+    CollectionReference profileCollection =
+        FirebaseFirestore.instance.collection('profile');
+    List yrAndDept = [];
+    return profileCollection
+        .doc(mail)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        yrAndDept.add(documentSnapshot['batch']);
+        yrAndDept.add(documentSnapshot['dept']);
+        return yrAndDept;
+      } else {
+        print('error');
+        return yrAndDept;
+      }
+    });
+  }
 }
