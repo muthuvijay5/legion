@@ -136,13 +136,13 @@ class _RenderProfileViewState extends State<RenderProfileView> {
             TextButton(
               style: flatButtonStyle,
               onPressed: () => changer(),
-              child: IconTextPair(edit_or_save_icon, edit_or_save_text, Color.fromARGB(255, 140, 193, 236),),
+              child: IconTextPair(edit_or_save_icon, edit_or_save_text, Colors.white,),
             ),
           ],
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.white,
         body: ProfilePage(name, "20i330@psgtech.ac.in", "20I330", phone_number, "2024", "IT", "Male", ["Subash", "Akash", "Hari", "Shankar", "Pradhip", "Kumar", "Muthu", "Vijay"], 'https://www.pixelstalk.net/wp-content/uploads/2016/06/Jungle-HD-Images.jpg', edit_or_display_name, edit_or_display_phone_number, error_message),
       ),
     );
@@ -259,7 +259,7 @@ class _ProfileNameState extends State<ProfileName> {
       name,
       style: TextStyle(
         fontSize: 25.0,
-        color: Colors.white,
+        color: Colors.black,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -322,7 +322,7 @@ class _ProfileEmailState extends State<ProfileEmail> {
       email,
       style: TextStyle(
         fontSize: 16.0,
-        color: Colors.white,
+        color: Colors.black,
       ),
     );
   }
@@ -346,7 +346,7 @@ class _ProfileRollNumberState extends State<ProfileRollNumber> {
       "Roll No. : " + roll_number,
       style: TextStyle(
         fontSize: 16.0,
-        color: Colors.white,
+        color: Colors.black,
       ),
     );
   }
@@ -367,7 +367,7 @@ class _ProfileGenderState extends State<ProfileGender> {
       widget.gender,
       style: TextStyle(
         fontSize: 16.0,
-        color: Colors.white,
+        color: Colors.black,
       ),
     );
   }
@@ -387,7 +387,7 @@ class _ProfilePhoneNumberState extends State<ProfilePhoneNumber> {
       phone_number,
       style: TextStyle(
         fontSize: 16.0,
-        color: Colors.white,
+        color: Colors.black,
       ),
     );
   }
@@ -408,7 +408,7 @@ class _ProfileBatchState extends State<ProfileBatch> {
       widget.batch,
       style: TextStyle(
         fontSize: 16.0,
-        color: Colors.white,
+        color: Colors.black,
       ),
     );
   }
@@ -430,7 +430,7 @@ class _ProfileDepartmentAndBatchState extends State<ProfileDepartmentAndBatch> {
       widget.department + " - " + widget.batch,
       style: TextStyle(
         fontSize: 16.0,
-        color: Colors.white,
+        color: Colors.black,
       ),
     );
   }
@@ -508,12 +508,12 @@ class _NameFieldState extends State<NameField> {
       child: TextFormField(
         controller: widget.name_controller,
         style: const TextStyle(
-          color: Colors.white,
+          color: Colors.black,
         ),
         decoration: InputDecoration(
           labelText: "Update your name",
           labelStyle: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
           ),
           border: OutlineInputBorder(),
         ),
@@ -543,12 +543,12 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         child: TextFormField(
           controller: widget.phone_number_controller,
           style: const TextStyle(
-            color: Colors.white,
+            color: Colors.black,
           ),
           decoration: InputDecoration(
             labelText: "Update your Phone No.",
             labelStyle: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
             ),
             border: OutlineInputBorder(),
           ),
@@ -576,7 +576,7 @@ class _ProfileClubsState extends State<ProfileClubs> {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 37, 3, 73),
+        color: Colors.blue,
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Wrap(
@@ -602,7 +602,7 @@ class _ClubTitleState extends State<ClubTitle> {
         "Clubs",
         style: TextStyle(
           fontSize: 20.0,
-          color: Colors.white,
+          color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -626,7 +626,7 @@ class _ClubItemState extends State<ClubItem> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
-          color: Color.fromARGB(255, 75, 30, 122),
+          color: Colors.white,
         ),
         child: Padding(
             padding: EdgeInsets.fromLTRB(7.0, 7.0, 7.0, 7.0),
@@ -634,7 +634,7 @@ class _ClubItemState extends State<ClubItem> {
             widget.club_name,
             style: TextStyle(
               fontSize: 16.0,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ),

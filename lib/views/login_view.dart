@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:legion/views/home_view.dart';
+import 'package:legion/views/staff_home_view.dart';
+import 'package:legion/views/student_home_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -29,7 +32,15 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        leading: IconButton(
+    icon: Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeView(
+                    )))
+  ),
+        title: const Text('Login'), centerTitle: true,),
       body: Column(
         children: [
           TextField(
@@ -39,14 +50,15 @@ class _LoginViewState extends State<LoginView> {
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(hintText: 'Email here'),
           ),
-          TextField(
+          Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
+          child: TextField(
             controller: _password,
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
             decoration: const InputDecoration(hintText: 'Password here'),
-          ),
-          TextButton(
+          )),
+          ElevatedButton(
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
@@ -57,22 +69,62 @@ class _LoginViewState extends State<LoginView> {
                 if (userCredential != null) {
                   if (FirebaseAuth.instance.currentUser?.emailVerified ??
                       false) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/emailVerify', (route) => false);
-                    print('User is verified');
+                    Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => StudentHomeView(
+                    )));
                   } else {
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         '/emailVerify', (route) => false);
                   }
                 }
-                print(userCredential);
               } on FirebaseAuthException catch (e) {
-                if (e.code == 'user-not-found') {
-                  print("User not found");
+                if (e.code == 'user-not-found' || e.code == 'invalid-email') {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("User Not Found!"),
+                      content: const Text("The e-mail you have given is not registered yet"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.blue,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text(
+                              "Okay",
+                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (e.code == 'wrong-password') {
-                  print("Wrong Password");
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Wrong Password!"),
+                      content: const Text("The password doesn't match the given credentials"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.blue,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text(
+                              "Okay",
+                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
               }
             },
@@ -80,10 +132,11 @@ class _LoginViewState extends State<LoginView> {
           ),
           TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/register', (route) => false);
+                Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeView(
+                    )));
               },
-              child: const Text('Not Registered yet? Register now!'))
+              child: const Text('Not registered yet? Register now!'))
         ],
       ),
     );

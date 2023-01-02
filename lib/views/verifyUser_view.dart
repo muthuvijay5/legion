@@ -23,11 +23,18 @@ class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Verify your email')),
-      body: Column(
+      appBar: AppBar(title: const Text('Verify your E-mail')),
+      body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Please check your email for verification link'),
-          TextButton(
+          Padding(
+          padding: EdgeInsets.only(bottom: 10.0),
+          child: Text('Please check your e-mail for verification link'),
+          ),
+          Padding(
+          padding: EdgeInsets.only(bottom: 10.0),
+          child: ElevatedButton(
             onPressed: () async {
               await FirebaseAuth.instance.currentUser?.reload();
               final user = FirebaseAuth.instance.currentUser;
@@ -46,17 +53,15 @@ class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
                 });
               } else {
                 setState(() {
-                  emailMessage = "Email not verified";
+                  emailMessage = "E-mail not verified yet";
                 });
-                //const Text('Email not verified! Check again');
-                print('Email not verified');
               }
             },
             child: const Text('Reload'),
-          ),
+          )),
           Text(emailMessage),
         ],
       ),
-    );
+    ));
   }
 }

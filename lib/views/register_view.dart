@@ -45,7 +45,7 @@ class _RegisterViewState extends State<RegisterView> {
     Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => HomeView(
                     )))
-  ), 
+  ),
         title: const Text('Register'), centerTitle: true,),
       body: Column(
         children: [
@@ -84,6 +84,7 @@ class _RegisterViewState extends State<RegisterView> {
                             )),
                     (route) => false);
               } on FirebaseAuthException catch (e) {
+                print(e);
                 if (e.code == 'weak-password') {
                   showDialog(
                     context: context,
@@ -107,7 +108,7 @@ class _RegisterViewState extends State<RegisterView> {
                       ],
                     ),
                   );
-                } else if (e.code == 'email-already-in-user') {
+                } else if (e.code == 'email-already-in-use') {
                   showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(

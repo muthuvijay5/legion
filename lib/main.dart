@@ -13,6 +13,7 @@ import 'views/register_view.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Flutter Demo',
     theme: ThemeData(
       primarySwatch: Colors.blue,
@@ -47,13 +48,6 @@ class HomePage extends StatelessWidget {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             return const HomeView();
-
-          // final user = FirebaseAuth.instance.currentUser;
-          // if (user?.emailVerified ?? false) {
-          // } else {
-          //   return const VerifyEmailView();
-          // }
-          // return const Text("Done");
           default:
             return const Text('Loading...');
         }
