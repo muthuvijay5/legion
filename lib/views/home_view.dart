@@ -7,44 +7,6 @@ import 'package:legion/firebase_methods.dart';
 
 FirebaseMethods some = FirebaseMethods();
 
-// class HomeView extends StatelessWidget {
-//   const HomeView({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Select user')),
-//       body: Column(children: [
-//         TextButton(
-//           onPressed: () {
-//             Navigator.of(context).push(MaterialPageRoute(
-//                 builder: (context) => RegisterView(
-//                       admin: false,
-//                       userType: "Student",
-//                     )));
-//           },
-//           child: const Text('Student'),
-//         ),
-//         TextButton(
-//           onPressed: () {
-//             Navigator.of(context).push(MaterialPageRoute(
-//                 builder: (context) => RegisterView(
-//                       admin: true,
-//                       userType: "Staff",
-//                     )));
-//           },
-//           child: const Text('Staff'),
-//         ),
-//         RaisedButton(
-//           onPressed: () {
-//             StepState
-//           },
-//         ),
-//       ]),
-//     );
-//   }
-// }
-
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -56,8 +18,15 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Select user')),
-      body: Column(children: <Widget>[
+      appBar: AppBar(
+        leading: Icon(null),
+        title: const Text('Select User'),
+        centerTitle: true,
+        ),
+      body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -66,8 +35,26 @@ class _HomeViewState extends State<HomeView> {
                       userType: "Student",
                     )));
           },
-          child: const Text('Student'),
-        ),
+          child: Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Container(
+            width: 100.0,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+              child: Text(
+              'Student',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+              ),
+            ),)
+          ),
+        )),
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -76,37 +63,29 @@ class _HomeViewState extends State<HomeView> {
                       userType: "Staff",
                     )));
           },
-          child: const Text('Staff'),
-        ),
-        TextButton(
-          child: Text("Fuck"),
-          onPressed: () {
-            //setState(() {
-            //updateProfileDetails("A", "name", "punda");
-            dynamic circularJson = {
-              'imgLink': "Link",
-              'dateTime': '223',
-              'postedBy': 'xyz',
-              'yearDept': {
-                'u1': ['dept', 123]
-              },
-            };
-
-            dynamic eventJson = {
-              'title': 'useless event',
-              'dateTime': 'dt',
-              'phoneName': ['123', '123'],
-              'posterImgLink': 'link',
-              'desc': 'des'
-            };
-            some.deleteCircular('Link').then((bool res) {
-              print(res);
-            });
-
-            //});
-          },
-        )
+          child: Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Container(
+            width: 100.0,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+              child: Text(
+              'Staff',
+              
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+              ),
+            ),
+          )),
+        )),
       ]),
+    )
     );
   }
 }

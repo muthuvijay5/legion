@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/views/verifyUser_view.dart';
+import 'package:legion/views/home_view.dart';
 
 // ignore: must_be_immutable
 class RegisterView extends StatefulWidget {
@@ -37,7 +38,15 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      appBar: AppBar(
+        leading: IconButton(
+    icon: Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeView(
+                    )))
+  ), 
+        title: const Text('Register'), centerTitle: true,),
       body: Column(
         children: [
           Text('Register as $userType'),
@@ -48,14 +57,15 @@ class _RegisterViewState extends State<RegisterView> {
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(hintText: 'Email here'),
           ),
-          TextField(
+          Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
+          child: TextField(
             controller: _password,
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
             decoration: const InputDecoration(hintText: 'Password here'),
-          ),
-          TextButton(
+          )),
+          ElevatedButton(
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
@@ -65,11 +75,6 @@ class _RegisterViewState extends State<RegisterView> {
                         email: email, password: password);
                 final user = FirebaseAuth.instance.currentUser;
                 await user?.sendEmailVerification();
-                print(userCredential);
-                // ignore: use_build_context_synchronously
-                // Navigator.of(context)
-                //     .pushNamedAndRemoveUntil('/emailVerify', (route) => false);
-                // ignore: use_build_context_synchronously
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -80,11 +85,74 @@ class _RegisterViewState extends State<RegisterView> {
                     (route) => false);
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  print('Weak Password');
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Weak Password"),
+                      content: const Text("The password you have given is too weak"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.blue,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text(
+                              "Okay",
+                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (e.code == 'email-already-in-user') {
-                  print('Email is already in use');
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("User Already Exists!"),
+                      content: const Text("The e-mail you have given is already exists"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.blue,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text(
+                              "Okay",
+                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (e.code == 'invalid-email') {
-                  print('Invalid Email');
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Invalid E-mail!"),
+                      content: const Text("The e-mail you have given is invalid"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.blue,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text(
+                              "Okay",
+                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
               }
             },
@@ -95,7 +163,7 @@ class _RegisterViewState extends State<RegisterView> {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/login', (route) => false);
               },
-              child: const Text('Already a user? Login!'))
+              child: const Text('Already an user? Login!'))
         ],
       ),
     );
