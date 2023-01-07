@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:legion/firebase_methods.dart';
 
 String name = "";
 String phone_number = "";
 dynamic edit_or_display_name;
 dynamic edit_or_display_phone_number;
+
+dynamic database_functions = FirebaseMethods();
+
+dynamic get_user(email) {
+  dynamic val;
+  get_user(email).then((value) => val = value);
+  return val;
+}
 
 final ButtonStyle flatButtonStyle = TextButton.styleFrom(
   shape: const RoundedRectangleBorder(
@@ -11,52 +20,82 @@ final ButtonStyle flatButtonStyle = TextButton.styleFrom(
   ),
 );
 
+
+
+class ProfileView extends StatefulWidget {
+  String email;
+  ProfileView(this.email, {super.key});
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.findUsers('email', widget.email),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic userList = snapshot.data;
+            return ProfileViewTmp(userList);
+          default:
+            return const Text('Loading...');
+        }
+      },
+    );
+  }
+}
+
 bool? name_validator(String? name) {
   if (name == '' || name == null || name[0] == ' ' || name[name.length - 1] == ' ') {
     return false;
   }
   String alphabets = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  int space_count = 0;
+  int spaceCount = 0;
   for (int i = 0; i < name.length; ++i) {
     if (name[i] == ' ') {
       if (name[i - 1] == ' ') {
         return false;
       }
-      ++space_count;
+      ++spaceCount;
     } else if (!alphabets.contains(name[i])) {
       return false;
     }
   }
-  if (space_count >= 5) {
+  if (spaceCount >= 5) {
     return false;
   }
   return true;
 }
 
-bool? phone_number_validator(String? phone_number) {
-  if (phone_number == '' || phone_number == null || phone_number.length != 10 || !(("6789").contains(phone_number[0]))) {
+bool? phone_number_validator(String? phoneNumber) {
+  if (phoneNumber == '' || phoneNumber == null || phoneNumber.length != 10 || !(("6789").contains(phoneNumber[0]))) {
     return false;
   }
   String numbers = "0123456789";
   for (int i = 1; i < 10; ++i) {
-    if (!numbers.contains(phone_number[i])) {
+    if (!numbers.contains(phoneNumber[i])) {
       return false;
     }
   }
   return true;
 }
 
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+class ProfileViewTmp extends StatelessWidget {
+  dynamic user_json;
+  ProfileViewTmp(this.user_json, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return RenderProfileView();
+    return RenderProfileView(user_json);
   }
 }
 
 class RenderProfileView extends StatefulWidget {
-  const RenderProfileView({super.key});
+  dynamic user_json;
+  RenderProfileView(this.user_json, {super.key});
 
   @override
   State<RenderProfileView> createState() => _RenderProfileViewState();
@@ -65,6 +104,19 @@ class RenderProfileView extends StatefulWidget {
 class _RenderProfileViewState extends State<RenderProfileView> {
   TextEditingController name_controller = TextEditingController();
   TextEditingController phone_number_controller = TextEditingController();
+
+  String name = '';
+  String phone_number = "";
+  dynamic edit_or_display_name = ProfileName();
+  dynamic edit_or_display_phone_number = ProfilePhoneNumber();
+  dynamic edit_or_save_icon = Icons.edit;
+  dynamic edit_or_save_text = "Edit";
+  String error_message = "";
+
+  void assign_values() {
+    name = widget.user_json[0]['name'];
+    phone_number = widget.user_json[0]['phone'].toString();
+  }
 
   dynamic get_name() {
     return name_controller.text;
@@ -82,22 +134,16 @@ class _RenderProfileViewState extends State<RenderProfileView> {
     phone_number_controller.text = "";
   }
 
-  String name = "Muthu Vijay";
-  String phone_number = "8825761030";
-  dynamic edit_or_display_name = ProfileName();
-  dynamic edit_or_display_phone_number = ProfilePhoneNumber();
-  dynamic edit_or_save_icon = Icons.edit;
-  dynamic edit_or_save_text = "Edit";
-  String error_message = "";
-
   void changer() {
     setState(() {
       if (edit_or_display_name.runtimeType == NameField) {
-        String new_name = get_name();
-        String new_phone_number = get_phone_number();
-        if (name_validator(new_name) == true && phone_number_validator(new_phone_number) == true) {
-          name = new_name;
-          phone_number = new_phone_number;
+        String newName = get_name();
+        String newPhoneNumber = get_phone_number();
+        if (name_validator(newName) == true && phone_number_validator(newPhoneNumber) == true) {
+          name = newName;
+          phone_number = newPhoneNumber;
+          database_functions.updateProfileDetails(widget.user_json[0]['email'], 'name', name);
+          database_functions.updateProfileDetails(widget.user_json[0]['email'], 'phone', phone_number);
           clear_name();
           clear_phone_number();
           edit_or_display_name = ProfileName();
@@ -106,7 +152,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
           edit_or_save_text = "Edit";
           error_message = "";
         } else {
-          if (name_validator(new_name) == false) {
+          if (name_validator(newName) == false) {
             error_message = "Invalid format for name!";
           } else {
             error_message = "Invalid format for phone number!";
@@ -123,9 +169,9 @@ class _RenderProfileViewState extends State<RenderProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    assign_values();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -143,7 +189,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
           foregroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        body: ProfilePage(name, "20i330@psgtech.ac.in", "20I330", phone_number, "2024", "IT", "Male", ["Subash", "Akash", "Hari", "Shankar", "Pradhip", "Kumar", "Muthu", "Vijay"], 'https://www.pixelstalk.net/wp-content/uploads/2016/06/Jungle-HD-Images.jpg', edit_or_display_name, edit_or_display_phone_number, error_message),
+        body: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['rollno'], phone_number, widget.user_json[0]['batch'].toString(), widget.user_json[0]['dept'], widget.user_json[0]['gender'], widget.user_json[0]['clubs'], widget.user_json[0]['photoImgLink'], edit_or_display_name, edit_or_display_phone_number, error_message),
       ),
     );
   }
@@ -569,9 +615,9 @@ class ProfileClubs extends StatefulWidget {
 class _ProfileClubsState extends State<ProfileClubs> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> club_list = [];
+    List<Widget> clubList = [];
     for (int i = 0; i < widget.clubs.length; ++i) {
-      club_list.add(ClubItem(widget.clubs[i]));
+      clubList.add(ClubItem(widget.clubs[i]));
     }
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -580,7 +626,7 @@ class _ProfileClubsState extends State<ProfileClubs> {
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Wrap(
-        children: club_list,
+        children: clubList,
       ),
     );
   }
@@ -674,3 +720,44 @@ class _ErrorDisplayState extends State<ErrorDisplay> {
     );
   }
 }
+
+// return FutureBuilder(
+//       future: database_functions.findUsers('email', widget.email),
+//       builder: (BuildContext context,
+//       AsyncSnapshot<String> snapshot,) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return CircularProgressIndicator();
+//         } else if (snapshot.connectionState == ConnectionState.done) {
+//           if (snapshot.hasError) {
+//             return const Text('Error');
+//           } else if (snapshot.hasData) {
+//             dynamic userList = snapshot.data as List;
+//             return MaterialApp(
+//               debugShowCheckedModeBanner: false,
+//               theme: ThemeData(
+//                 primarySwatch: Colors.blue,
+//               ),
+//               home: Scaffold(
+//                 appBar: AppBar(
+//                   title: Text('Profile'),
+//                   actions: <Widget>[
+//                     TextButton(
+//                       style: flatButtonStyle,
+//                       onPressed: () => changer(),
+//                       child: IconTextPair(edit_or_save_icon, edit_or_save_text, Colors.white,),
+//                     ),
+//                   ],
+//                   backgroundColor: Colors.blue,
+//                   foregroundColor: Colors.white,
+//                 ),
+//                 backgroundColor: Colors.white,
+//                 body: ProfilePage(name, widget.email, userList[0].rollno, phone_number, userList[0].batch, userList[0].dept, userList[0].gender, ["Subash", "Akash", "Hari", "Shankar", "Pradhip", "Kumar", "Muthu", "Vijay"], userList[0].photoImgLink, edit_or_display_name, edit_or_display_phone_number, error_message),
+//               ),
+//             );
+//           } else {
+//             return const Text('Loading...');
+//           }
+//         } else {
+//         return Text('State: ${snapshot.connectionState}');
+//       }
+//     });

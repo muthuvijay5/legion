@@ -110,7 +110,6 @@ class FirebaseMethods {
     return userProfileCollection
         .doc(mail)
         .update({attribute: value}).then((value) {
-      print("Profile Updated!");
       return true;
     }).catchError((error) {
       print("Failed to update user profile: $error");
@@ -206,25 +205,6 @@ class FirebaseMethods {
     }).catchError((error) {
       print("Cannot delete circular $error");
       return false;
-    });
-  }
-
-  Future<List<dynamic>> getYrAndDept(String mail) async {
-    CollectionReference profileCollection =
-        FirebaseFirestore.instance.collection('profile');
-    List yrAndDept = [];
-    return profileCollection
-        .doc(mail)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        yrAndDept.add(documentSnapshot['batch']);
-        yrAndDept.add(documentSnapshot['dept']);
-        return yrAndDept;
-      } else {
-        print('error');
-        return yrAndDept;
-      }
     });
   }
 }

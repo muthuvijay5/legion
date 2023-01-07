@@ -29,8 +29,6 @@ void main() {
             admin: false,
             userType: "Student",
           ),
-      '/events': (context) => const ClubEventsPage(),
-      '/circulars': (context) => const CircularPage()
     },
   ));
 }

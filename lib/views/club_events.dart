@@ -1,18 +1,50 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:legion/firebase_methods.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer';
 
+dynamic database_functions = FirebaseMethods();
+
+class ClubEventView extends StatefulWidget {
+  String email;
+  ClubEventView(this.email, {super.key});
+
+  @override
+  State<ClubEventView> createState() => _ClubEventViewState();
+}
+
+class _ClubEventViewState extends State<ClubEventView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.findUsers('email', "A"),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic userList = snapshot.data;
+            return ClubEventsPage(widget.email, userList);
+          default:
+            return const Text('Loading...');
+        }
+      },
+    );
+  }
+}
+
 class ClubEventsPage extends StatefulWidget {
-  const ClubEventsPage({Key? key}) : super(key: key);
+  final String email;
+  dynamic user_json;
+  ClubEventsPage(this.email, this.user_json,{Key? key}) : super(key: key);
   @override
   State<ClubEventsPage> createState() => _ClubEventsPage();
 }
 
 class _ClubEventsPage extends State<ClubEventsPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +52,12 @@ class _ClubEventsPage extends State<ClubEventsPage> {
         child: Column(children: [
           Expanded(
               child: StreamBuilder<QuerySnapshot>(
-            stream: firestore.collection("events").snapshots(),
+            stream: firestore
+                .collection("events")
+                .where("year", arrayContains: widget.user_json[0]["batch"])
+                .where("dept", isEqualTo: widget.user_json[0]["dept"])
+                // .orderBy("posted_at", descending: true)
+                .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Text("please wait");

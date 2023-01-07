@@ -4,9 +4,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:legion/views/login_view.dart';
 import 'package:legion/views/register_view.dart';
+import 'package:legion/views/profile_view.dart';
 import 'package:legion/firebase_methods.dart';
-
-FirebaseMethods some = FirebaseMethods();
 
 class StudentHomeView extends StatefulWidget {
   const StudentHomeView({super.key});
