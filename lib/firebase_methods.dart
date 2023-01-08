@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:legion/firebase_options.dart';
-
+String? circularurl;
+String? eventurl;
 dynamic userJson = {
   'name': "A",
   'email': "A",
@@ -118,6 +119,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createCircular(dynamic circularJson) {
+    eventJson.imageurl=circularurl;
     CollectionReference circularCollectionRef =
         FirebaseFirestore.instance.collection('circular');
     return circularCollectionRef
@@ -148,6 +150,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createEvent(dynamic eventJson) async {
+    eventJson.imageurl=eventurl;
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
     return eventCollection.doc(eventJson['title']).set(eventJson).then((value) {
@@ -157,6 +160,34 @@ class FirebaseMethods {
       print("Failed to add event: $error");
       return false;
     });
+  }
+  Future selectImageCircular() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+      setState(() => this.image = imageTemp);
+      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+
+      circularurl = await (await uploadTask).ref.getDownloadURL();
+    }  catch(e) {
+      print('Failed to pick image: $e');
+    }
+  }
+  Future selectImageEvent() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+      setState(() => this.image = imageTemp);
+      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+
+      eventurl = await (await uploadTask).ref.getDownloadURL();
+    }  catch(e) {
+      print('Failed to pick image: $e');
+    }
   }
 
   Future<bool> updateEventDetails(
