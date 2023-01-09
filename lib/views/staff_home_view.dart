@@ -2,14 +2,19 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:legion/views/CircularForm.dart';
+import 'package:legion/views/EventForm.dart';
 import 'package:legion/views/login_view.dart';
+import 'package:legion/views/profile_view.dart';
+import 'package:legion/views/recruit_view.dart';
 import 'package:legion/views/register_view.dart';
 import 'package:legion/firebase_methods.dart';
 
 FirebaseMethods some = FirebaseMethods();
 
 class StaffHomeView extends StatefulWidget {
-  const StaffHomeView({super.key});
+  String email;
+  StaffHomeView(this.email, {super.key});
 
   @override
   State<StaffHomeView> createState() => _StaffHomeViewState();
@@ -31,7 +36,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => ProfileView(widget.email
                     )));
           },
           child: Padding(
@@ -57,7 +62,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => EventFormView(widget.email
                     )));
           },
           child: Padding(
@@ -84,7 +89,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => CircularFormView(widget.email
                     )));
           },
           child: Padding(
@@ -110,7 +115,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => RecruitView(widget.email
                     )));
           },
           child: Padding(

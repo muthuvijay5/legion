@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:legion/views/CircularForm.dart';
-import 'package:legion/views/EventForm.dart';
 import 'package:legion/views/home_view.dart';
 import 'package:legion/views/staff_home_view.dart';
 import 'package:legion/views/student_home_view.dart';
-// import 'package:legion/views/circular_page.dart';
-import 'package:legion/views/club_events.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -74,7 +70,7 @@ class _LoginViewState extends State<LoginView> {
                   if (FirebaseAuth.instance.currentUser?.emailVerified ??
                       false) {
                     Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CircularFormView(email
+                builder: (context) => StudentHomeView(email
                     )));
                   } else {
                     // ignore: use_build_context_synchronously

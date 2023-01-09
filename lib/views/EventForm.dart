@@ -14,8 +14,36 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:legion/firebase_options.dart';
 import 'package:image_picker/image_picker.dart';
 
+class EventFormView extends StatefulWidget {
+  String email;
+  EventFormView(this.email, {super.key});
+
+  @override
+  State<EventFormView> createState() => _EventFormViewState();
+}
+
+class _EventFormViewState extends State<EventFormView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.findUsers('email', widget.email),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic userList = snapshot.data;
+            return EventForm(widget.email, userList);
+          default:
+            return const Text('Loading...');
+        }
+      },
+    );
+  }
+}
+
 class EventForm extends StatefulWidget {
-  const EventForm({super.key});
+  dynamic user_json;
+  String email;
+  EventForm(this.email, this.user_json, {super.key});
 
   @override
   EvenFormData createState() {

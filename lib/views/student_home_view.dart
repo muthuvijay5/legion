@@ -2,13 +2,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:legion/views/circular_page.dart';
+import 'package:legion/views/club_events.dart';
 import 'package:legion/views/login_view.dart';
 import 'package:legion/views/register_view.dart';
 import 'package:legion/views/profile_view.dart';
 import 'package:legion/firebase_methods.dart';
 
 class StudentHomeView extends StatefulWidget {
-  const StudentHomeView({super.key});
+  String email;
+  StudentHomeView(this.email, {super.key});
 
   @override
   State<StudentHomeView> createState() => _StudentHomeViewState();
@@ -30,7 +33,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => ProfileView(widget.email
                     )));
           },
           child: Padding(
@@ -56,7 +59,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => ClubEventView(widget.email
                     )));
           },
           child: Padding(
@@ -71,7 +74,6 @@ class _StudentHomeViewState extends State<StudentHomeView> {
               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
               child: Text(
               'Participate',
-              
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -83,7 +85,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => CircularView(widget.email
                     )));
           },
           child: Padding(

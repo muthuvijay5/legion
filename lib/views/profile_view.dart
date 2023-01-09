@@ -114,6 +114,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
   String error_message = "";
 
   void assign_values() {
+    print(widget.user_json);
     name = widget.user_json[0]['name'];
     phone_number = widget.user_json[0]['phone'].toString();
   }
