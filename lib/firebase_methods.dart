@@ -126,7 +126,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createCircular(dynamic circularJson) {
-    circularJson.imageurl=circularurl;
+    circularJson.imageurl = circularurl;
     CollectionReference circularCollectionRef =
         FirebaseFirestore.instance.collection('circular');
     return circularCollectionRef
@@ -157,7 +157,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createEvent(dynamic eventJson) async {
-    eventJson.imageurl=eventurl;
+    eventJson['imgLink'] = eventurl;
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
     return eventCollection.doc(eventJson['title']).set(eventJson).then((value) {
@@ -168,31 +168,79 @@ class FirebaseMethods {
       return false;
     });
   }
+
+  Future<bool> createRecruitForm(dynamic recruitJson) async {
+    CollectionReference recruitCollection =
+        FirebaseFirestore.instance.collection('recruit');
+    return recruitCollection
+        .doc(recruitJson['clubName'])
+        .set(recruitJson)
+        .then((value) {
+      print("Recruit entry Added");
+      return true;
+    }).catchError((error) {
+      print("Failed to add recruit entry: $error");
+      return false;
+    });
+  }
+
+  Future<bool> updateRecruitFormDetails(
+      String clubName, String attribute, dynamic value) async {
+    CollectionReference recruitCollection =
+        FirebaseFirestore.instance.collection('recruit');
+    return recruitCollection
+        .doc(clubName)
+        .update({attribute: value}).then((value) {
+      return true;
+    }).catchError((error) {
+      print("Failed to update recruit form: $error");
+      return false;
+    });
+  }
+
+  Future<bool> deleteRecruitForm(String clubName) async {
+    CollectionReference recruitCollection =
+        FirebaseFirestore.instance.collection('recruit');
+    return recruitCollection.doc(clubName).delete().then((value) {
+      print("Recruit Form Deleted");
+      return true;
+    }).catchError((error) {
+      print("Cannot delete Recruit entry $error");
+      return false;
+    });
+  }
+
   Future selectImageCircular() async {
     try {
-      dynamic image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
+      dynamic image =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
       final imageTemp = File(image.path);
       // setState(() => this.image = imageTemp);
-      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
-      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask =
+          storageReference.child('filesurl/').putFile(imageTemp);
 
       circularurl = await (await uploadTask).ref.getDownloadURL();
-    }  catch(e) {
+    } catch (e) {
       print('Failed to pick image: $e');
     }
   }
+
   Future selectImageEvent() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
+      if (image == null) return;
       final imageTemp = File(image.path);
-     // setState(() => this.image = imageTemp);
-      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
-      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+      // setState(() => this.image = imageTemp);
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask =
+          storageReference.child('filesurl/').putFile(imageTemp);
 
       eventurl = await (await uploadTask).ref.getDownloadURL();
-    }  catch(e) {
+    } catch (e) {
       print('Failed to pick image: $e');
     }
   }
