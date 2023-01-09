@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:legion/firebase_methods.dart';
 import 'package:legion/main.dart';
 import 'package:flutter/material.dart';
+import 'package:legion/views/home_view.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,27 +13,50 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:legion/firebase_options.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CircularForm extends StatefulWidget {
-  const CircularForm({super.key});
-
-  @override
-  CircularFormData createState() {
-    return CircularFormData();
-  }
-}
-
 enum department { IT , CSE , ECE , all , specify,none}
+
+dynamic database_functions = FirebaseMethods();
 
 enum years { First , Second , Third , Four,none }
 
+class CircularFormView extends StatefulWidget {
+  String email;
+  CircularFormView(this.email, {super.key});
+
+  @override
+  State<CircularFormView> createState() => _CircularFormViewState();
+}
+
+class _CircularFormViewState extends State<CircularFormView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.findUsers('email', widget.email),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic userList = snapshot.data;
+            return CircularForm(widget.email, userList);
+          default:
+            return const Text('Loading...');
+        }
+      },
+    );
+  }
+}
+
 class CircularForm extends StatefulWidget {
-  const CircularForm({super.key});
+  String email;
+  dynamic userList;
+  CircularForm(this.email, this.userList, {super.key});
 
   @override
   CircularFormData createState() {
     return CircularFormData();
   }
 }
+
+
 
 class CircularFormData extends State<CircularForm>{
 
@@ -64,8 +89,17 @@ class CircularFormData extends State<CircularForm>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Form(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+    icon: Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeView(
+                    )))
+  ),
+        title: const Text('Login'), centerTitle: true,),
+      body: Form(
       key: _formKey1,
       child: Container(
         padding: EdgeInsets.all(30),
@@ -77,7 +111,7 @@ class CircularFormData extends State<CircularForm>{
           height: 20,
         ),
           Center(
-            child: ElevatedButton(onPressed: selectImageCircular, child: Text('Pick Circular Image')),
+            child: ElevatedButton(onPressed: database_functions.selectImageCircular, child: Text('Pick Circular Image')),
           ),
           SizedBox(
             height: 10,
@@ -242,7 +276,7 @@ class CircularFormData extends State<CircularForm>{
                          'imageurl':'',
                     };
                 
-            createCircular(userJson);
+            database_functions.createCircular(userJson);
 
 
             message = 'Form sent successfully';
@@ -275,7 +309,7 @@ class CircularFormData extends State<CircularForm>{
         ),
       ),
 
-    );
+    ));
   }
 
 }

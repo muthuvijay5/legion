@@ -1,7 +1,14 @@
+// ignore_for_file: unused_import, avoid_print
+
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:legion/firebase_options.dart';
+import 'package:image_picker/image_picker.dart';
+
 String? circularurl;
 String? eventurl;
 dynamic userJson = {
@@ -66,9 +73,9 @@ class FirebaseMethods {
         .get()
         .then((QuerySnapshot querySnapshot) {
       List users = [];
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         users.add(doc.data());
-      });
+      }
       return users;
     }).catchError((error) {
       print("Failed to retrieve users: $error");
@@ -83,9 +90,9 @@ class FirebaseMethods {
         .get()
         .then((QuerySnapshot querySnapshot) {
       List circulars = [];
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         circulars.add(doc.data());
-      });
+      }
       return circulars;
     }).catchError((error) {
       print("Failed to retrieve circulars: $error");
@@ -119,7 +126,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createCircular(dynamic circularJson) {
-    eventJson.imageurl=circularurl;
+    circularJson.imageurl=circularurl;
     CollectionReference circularCollectionRef =
         FirebaseFirestore.instance.collection('circular');
     return circularCollectionRef
@@ -163,10 +170,10 @@ class FirebaseMethods {
   }
   Future selectImageCircular() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      dynamic image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
       final imageTemp = File(image.path);
-      setState(() => this.image = imageTemp);
+      // setState(() => this.image = imageTemp);
       final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
       UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
 
@@ -180,7 +187,7 @@ class FirebaseMethods {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
       final imageTemp = File(image.path);
-      setState(() => this.image = imageTemp);
+     // setState(() => this.image = imageTemp);
       final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
       UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
 

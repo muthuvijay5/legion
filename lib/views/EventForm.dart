@@ -5,6 +5,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:legion/main.dart';
 import 'package:flutter/material.dart';
+import 'package:legion/views/circular_page.dart';
+import 'package:legion/views/home_view.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,7 +63,17 @@ class EvenFormData extends State<EventForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-    return Form(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+    icon: Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeView(
+                    )))
+  ),
+        title: const Text('Login'), centerTitle: true,),
+      body: Form(
       key: _formKey,
       child: SingleChildScrollView(
 
@@ -77,7 +89,7 @@ class EvenFormData extends State<EventForm> {
               height: 20,
             ),
             Center(
-            child: ElevatedButton(onPressed: selectImageEvent, child: Text('Pick Image')),
+            child: ElevatedButton(onPressed: database_functions.selectImageEvent, child: Text('Pick Image')),
             ),
             SizedBox(
               height: 10,
@@ -285,7 +297,7 @@ class EvenFormData extends State<EventForm> {
                             'imageurl':'',
                     };
                 
-                       createEvent(userJson);
+                      database_functions.createEvent(userJson);
 
 
 
@@ -309,6 +321,7 @@ class EvenFormData extends State<EventForm> {
           ],
         ),
       )),
+    )
     );
   }
 }
