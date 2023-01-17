@@ -126,7 +126,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createCircular(dynamic circularJson) {
-    circularJson.imageurl=circularurl;
+    circularJson.imageurl = circularurl;
     CollectionReference circularCollectionRef =
         FirebaseFirestore.instance.collection('circular');
     return circularCollectionRef
@@ -157,7 +157,7 @@ class FirebaseMethods {
   }
 
   Future<bool> createEvent(dynamic eventJson) async {
-    eventJson.imageurl=eventurl;
+    eventJson.imageurl = eventurl;
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
     return eventCollection.doc(eventJson['title']).set(eventJson).then((value) {
@@ -168,31 +168,38 @@ class FirebaseMethods {
       return false;
     });
   }
+
   Future selectImageCircular() async {
     try {
-      dynamic image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
+      dynamic image =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
       final imageTemp = File(image.path);
       // setState(() => this.image = imageTemp);
-      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
-      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask =
+          storageReference.child('filesurl/').putFile(imageTemp);
 
       circularurl = await (await uploadTask).ref.getDownloadURL();
-    }  catch(e) {
+    } catch (e) {
       print('Failed to pick image: $e');
     }
   }
+
   Future selectImageEvent() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
+      if (image == null) return;
       final imageTemp = File(image.path);
-     // setState(() => this.image = imageTemp);
-      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
-      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+      // setState(() => this.image = imageTemp);
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask =
+          storageReference.child('filesurl/').putFile(imageTemp);
 
       eventurl = await (await uploadTask).ref.getDownloadURL();
-    }  catch(e) {
+    } catch (e) {
       print('Failed to pick image: $e');
     }
   }
@@ -243,6 +250,22 @@ class FirebaseMethods {
     }).catchError((error) {
       print("Cannot delete circular $error");
       return false;
+    });
+  }
+
+  Future<List<dynamic>> getMatchingRecords(
+      String collectionName, String batchAndDept) {
+    CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection(collectionName);
+    List res = [];
+    return collectionReference
+        .where('for', arrayContains: batchAndDept)
+        .get()
+        .then((snapshot) {
+      for (var doc in snapshot.docs) {
+        res.add(doc.data());
+      }
+      return res;
     });
   }
 }
