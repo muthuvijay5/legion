@@ -44,41 +44,40 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCHxK9k0ibf53mCwSSkwqH-frVvF4Nz9sY',
-    appId: '1:730042238274:web:6e4521220e6165ac4f74db',
-    messagingSenderId: '730042238274',
-    projectId: 'legion-psg-flutter',
-    authDomain: 'legion-psg-flutter.firebaseapp.com',
-    storageBucket: 'legion-psg-flutter.appspot.com',
+    apiKey: 'AIzaSyDFZ8FdMuEcveASUgRsMoGfqDjhGLxBXW4',
+    appId: '1:158358325466:web:1844553f3a748dca153de3',
+    messagingSenderId: '158358325466',
+    projectId: 'clubeventform',
+    authDomain: 'clubeventform.firebaseapp.com',
+    storageBucket: 'clubeventform.appspot.com',
+    measurementId: 'G-YF80YXC42N',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBzjzBQoWbSkQA7P8NeyCew-vykftK6rvs',
-    appId: '1:730042238274:android:2d73c3ab692ab8e74f74db',
-    messagingSenderId: '730042238274',
-    projectId: 'legion-psg-flutter',
-    storageBucket: 'legion-psg-flutter.appspot.com',
+    apiKey: 'AIzaSyDP1ryriHZwBS5lpe7OzMZu4sjIm39i2Rw',
+    appId: '1:158358325466:android:852eaa97afd40c67153de3',
+    messagingSenderId: '158358325466',
+    projectId: 'clubeventform',
+    storageBucket: 'clubeventform.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB2rqG8ahDGHgcsx87e6zhs7VUHywpvnYI',
-    appId: '1:730042238274:ios:2fef8fbab7ad1e094f74db',
-    messagingSenderId: '730042238274',
-    projectId: 'legion-psg-flutter',
-    storageBucket: 'legion-psg-flutter.appspot.com',
-    iosClientId:
-        '730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDCCeeBaSYq1LmraQdP9DdBFftNtxqo0fU',
+    appId: '1:158358325466:ios:4c7e98869965bc72153de3',
+    messagingSenderId: '158358325466',
+    projectId: 'clubeventform',
+    storageBucket: 'clubeventform.appspot.com',
+    iosClientId: '158358325466-5gt96um8vh9gd56j4hvh9ke0psr6iemh.apps.googleusercontent.com',
     iosBundleId: 'com.example.legion',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB2rqG8ahDGHgcsx87e6zhs7VUHywpvnYI',
-    appId: '1:730042238274:ios:2fef8fbab7ad1e094f74db',
-    messagingSenderId: '730042238274',
-    projectId: 'legion-psg-flutter',
-    storageBucket: 'legion-psg-flutter.appspot.com',
-    iosClientId:
-        '730042238274-oss3b1qi8o4is4k3ln9rbga88prqhi5k.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDCCeeBaSYq1LmraQdP9DdBFftNtxqo0fU',
+    appId: '1:158358325466:ios:4c7e98869965bc72153de3',
+    messagingSenderId: '158358325466',
+    projectId: 'clubeventform',
+    storageBucket: 'clubeventform.appspot.com',
+    iosClientId: '158358325466-5gt96um8vh9gd56j4hvh9ke0psr6iemh.apps.googleusercontent.com',
     iosBundleId: 'com.example.legion',
   );
 }

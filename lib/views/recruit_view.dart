@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'dept_checkbox.dart';
 
 class RecruitView extends StatefulWidget {
   String email;
@@ -50,26 +51,17 @@ class RecruitPage extends StatefulWidget {
 
 class _RecruitPageState extends State<RecruitPage> {
   final _formKey = GlobalKey<FormState>();
-  int startYear = 2020;
-  int endYear = 2030;
-  String dropdownvalue = "2020";
-
   // List of items in our dropdown menu
-  var items = [
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026",
-    "2027",
-    "2028",
-    "2029",
-    "2030",
-  ];
+  var yearVal = 1;
+  var itCheck = new List.filled(4, false, growable: false);
+  var cseCheck = new List.filled(4, false, growable: false);
+  var eceCheck = new List.filled(4, false, growable: false);
+
+  Map<String, dynamic> data = {};
+
+  _RecruitPageState() {
+    data = {"IT": itCheck, "CSE": cseCheck, "ECE": eceCheck};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,62 +84,19 @@ class _RecruitPageState extends State<RecruitPage> {
                 },
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  labelText: 'Requirement',
+                  labelText: 'Description',
                 ),
+                onChanged: (String? value) {
+                  data["desc"] = value;
+                },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Degree',
-                ),
-              ),
-            ),
-            Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: DropdownButtonFormField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    labelText: 'Batch',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.toString() == "") {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  value: dropdownvalue,
-                  items: items.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items.toString()),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {},
-                )),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Department/Branch',
-                ),
-              ),
+            Column(
+              children: [
+                DeptCheckBox(itCheck, "IT department"),
+                DeptCheckBox(cseCheck, "CSE department"),
+                DeptCheckBox(eceCheck, "ECE department"),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -160,6 +109,7 @@ class _RecruitPageState extends State<RecruitPage> {
                 ),
                 onPressed: () {
                   // Validate returns true if the form is valid, or false otherwise.
+                  print(data);
                   if (_formKey.currentState!.validate()) {
                     // If the form is valid, display a snackbar. In the real world,
                     // you'd often call a server or save the information in a database.

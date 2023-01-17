@@ -237,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(children: <Widget>[Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -257,7 +257,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ProfileClubs(widget.clubs),
         ErrorDisplay(widget.error_message),
       ],
-    );
+    )]);
   }
 }
 
@@ -721,44 +721,3 @@ class _ErrorDisplayState extends State<ErrorDisplay> {
     );
   }
 }
-
-// return FutureBuilder(
-//       future: database_functions.findUsers('email', widget.email),
-//       builder: (BuildContext context,
-//       AsyncSnapshot<String> snapshot,) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return CircularProgressIndicator();
-//         } else if (snapshot.connectionState == ConnectionState.done) {
-//           if (snapshot.hasError) {
-//             return const Text('Error');
-//           } else if (snapshot.hasData) {
-//             dynamic userList = snapshot.data as List;
-//             return MaterialApp(
-//               debugShowCheckedModeBanner: false,
-//               theme: ThemeData(
-//                 primarySwatch: Colors.blue,
-//               ),
-//               home: Scaffold(
-//                 appBar: AppBar(
-//                   title: Text('Profile'),
-//                   actions: <Widget>[
-//                     TextButton(
-//                       style: flatButtonStyle,
-//                       onPressed: () => changer(),
-//                       child: IconTextPair(edit_or_save_icon, edit_or_save_text, Colors.white,),
-//                     ),
-//                   ],
-//                   backgroundColor: Colors.blue,
-//                   foregroundColor: Colors.white,
-//                 ),
-//                 backgroundColor: Colors.white,
-//                 body: ProfilePage(name, widget.email, userList[0].rollno, phone_number, userList[0].batch, userList[0].dept, userList[0].gender, ["Subash", "Akash", "Hari", "Shankar", "Pradhip", "Kumar", "Muthu", "Vijay"], userList[0].photoImgLink, edit_or_display_name, edit_or_display_phone_number, error_message),
-//               ),
-//             );
-//           } else {
-//             return const Text('Loading...');
-//           }
-//         } else {
-//         return Text('State: ${snapshot.connectionState}');
-//       }
-//     });
