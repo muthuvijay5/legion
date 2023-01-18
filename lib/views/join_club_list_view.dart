@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/join_club_view.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/student_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -23,7 +25,7 @@ class _JoinClubListViewState extends State<JoinClubListView> {
             dynamic join_club_list = snapshot.data;
             return JoinClubPage(join_club_list, widget.user_json);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -47,13 +49,19 @@ class _JoinClubPageState extends State<JoinClubPage> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ListJoinClub(widget.join_club_list, widget.user_json)))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StudentHomeView(widget.user_json['email']),
+              ),
+            )),
         title: Text("Join Club"),
         centerTitle: true,
       ),
-      body: ListJoinClub(widget.join_club_list, widget.user_json),
-    );
+      body: SingleChildScrollView(
+      child: ListJoinClub(widget.join_club_list, widget.user_json),
+    ),);
   }
 }
 
@@ -116,8 +124,12 @@ class _AEventState extends State<AEvent> {
           TextButton(
             style: flatButtonStyle,
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => JoinClubView(widget.name, widget.desc, widget.user_json)));
+              Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JoinClubView(widget.name, widget.desc, widget.user_json),
+              ),
+            );
             },
             child: Text(
               'View',

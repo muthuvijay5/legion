@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/events_view.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/student_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -25,7 +27,7 @@ class _EventsListViewState extends State<EventsListView> {
             print(events_list);
             return EventsPage(events_list, widget.user_json);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -49,13 +51,19 @@ class _EventsPageState extends State<EventsPage> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ListEvents(widget.events_list, widget.user_json)))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StudentHomeView(widget.user_json['email']),
+              ),
+            )),
         title: Text("Events"),
         centerTitle: true,
       ),
-      body: ListEvents(widget.events_list, widget.user_json),
-    );
+      body: SingleChildScrollView(
+      child: ListEvents(widget.events_list, widget.user_json),
+    ),);
   }
 }
 
@@ -121,8 +129,12 @@ class _AEventState extends State<AEvent> {
           TextButton(
             style: flatButtonStyle,
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EventsView(widget.url, widget.name, widget.time, widget.desc, widget.phone, widget.user_json)));
+              Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventsView(widget.url, widget.name, widget.time, widget.desc, widget.phone, widget.user_json),
+              ),
+            );
             },
             child: Text(
               'View',

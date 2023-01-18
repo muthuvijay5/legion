@@ -1,30 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:legion/views/home_view.dart';
 
 // ignore: must_be_immutable
 class VerifyAndAddUser extends StatefulWidget {
-  bool admin;
-  String userType;
-  VerifyAndAddUser({Key? key, required this.admin, required this.userType})
+  VerifyAndAddUser({Key? key})
       : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
   State<VerifyAndAddUser> createState() =>
-      _VerifyAndAddUserState(admin, userType);
+      _VerifyAndAddUserState();
 }
 
 class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
   String emailMessage = '';
-  bool admin;
-  String userType;
-  _VerifyAndAddUserState(this.admin, this.userType);
+  _VerifyAndAddUserState();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Verify your E-mail')),
-      body: Center(
+      resizeToAvoidBottomInset : false,
+      appBar: AppBar(
+        leading: IconButton(
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeView(),
+      ),
+    )
+  ),
+        title: const Text('Verify your E-mail')),
+      body: SingleChildScrollView(
+      child: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -45,11 +55,10 @@ class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
                     FirebaseFirestore.instance.collection('users');
                 final userJson = {
                   'name': user?.email,
-                  'admin': admin,
                 };
                 userCollection.doc(user?.uid).set(userJson);
                 setState(() {
-                  emailMessage = "Email verified and user added as $userType";
+                  emailMessage = "Email verified and user added";
                 });
               } else {
                 setState(() {
@@ -62,6 +71,6 @@ class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
           Text(emailMessage),
         ],
       ),
-    ));
+    )),);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/login_view.dart';
 import 'package:legion/views/verifyUser_view.dart';
 import 'package:legion/views/home_view.dart';
 
@@ -81,8 +82,13 @@ class _RegisterViewState extends State<RegisterViewStudent> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const HomeView()))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeView(),
+              ),
+            )),
         title: const Text('Register'),
         centerTitle: true,
       ),
@@ -294,14 +300,12 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                             fbm.createUser(data);
                             print(data);
                             print("Validate");
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => VerifyAndAddUser(
-                                          admin: false,
-                                          userType: userType,
-                                        )),
-                                (route) => false);
+                            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyAndAddUser(),
+              ),
+            );
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'weak-password') {
                               showDialog(
@@ -416,8 +420,12 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                     ),
                     TextButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login', (route) => false);
+                          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginView(),
+              ),
+            );
                         },
                         child: const Text('Already an user? Login!'))
                   ],

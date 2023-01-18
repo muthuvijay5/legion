@@ -6,6 +6,8 @@ import 'package:legion/firebase_methods.dart';
 import 'package:legion/main.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/views/home_view.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/staff_home_view.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,7 +40,7 @@ class _CircularFormViewState extends State<CircularFormView> {
             dynamic userList = snapshot.data;
             return CircularForm(widget.email, userList);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -86,9 +88,12 @@ class CircularFormData extends State<CircularForm>{
         leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.white),
     onPressed: () => 
-    Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HomeView(
-                    )))
+    Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StaffHomeView(widget.email),
+              ),
+            )
   ),
         title: const Text('Login'), centerTitle: true,),
       body: SingleChildScrollView(

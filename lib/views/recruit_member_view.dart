@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/list_recruit_member_view.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/staff_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -29,7 +32,7 @@ class _RecruitMemberViewState extends State<RecruitMemberView> {
             dynamic userList = snapshot.data;
             return RecruitMemberViewTmp(userList, widget.add_club);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -84,7 +87,18 @@ class _RenderRecruitMemberViewState extends State<RenderRecruitMemberView> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
+          leading: IconButton(
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ListRecruitMemberView(widget.user_json[0]['email']),
+      ),
+    )
+  ),
           title: Text('Profile'),
           actions: <Widget>[
             TextButton(
@@ -97,9 +111,10 @@ class _RenderRecruitMemberViewState extends State<RenderRecruitMemberView> {
           foregroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        body: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url']),
+        body: SingleChildScrollView(
+      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url']),
       ),
-    );
+    ),);
   }
 }
 

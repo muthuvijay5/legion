@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/views/choose_home_view.dart';
 import 'package:legion/views/home_view.dart';
+import 'package:legion/views/verifyUser_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -31,16 +32,21 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+resizeToAvoidBottomInset : false,
       appBar: AppBar(
         leading: IconButton(
     icon: const Icon(Icons.arrow_back, color: Colors.white),
     onPressed: () => 
-    Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const HomeView(
-                    )))
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeView(),
+      ),
+    )
   ),
         title: const Text('Login'), centerTitle: true,),
-      body: Column(
+      body: SingleChildScrollView(
+      child: Column(
         children: [
           TextField(
             controller: _email,
@@ -61,6 +67,31 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
+              if (password == '' || password == null || email == '' || email == null) {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Empty Input(s)!"),
+                      content: const Text("Please provide valid input"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.blue,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text(
+                              "Okay",
+                              style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+              }
+              else {
               try {
                 final userCredential = await FirebaseAuth.instance
                     .signInWithEmailAndPassword(
@@ -68,13 +99,19 @@ class _LoginViewState extends State<LoginView> {
                 if (userCredential != null) {
                   if (FirebaseAuth.instance.currentUser?.emailVerified ??
                       false) {
-                    Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ChooseView(email
-                    )));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChooseView(email),
+                          ),
+                        );
                   } else {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/emailVerify', (route) => false);
+                    Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyAndAddUser(),
+              ),
+            );
                   }
                 }
               } on FirebaseAuthException catch (e) {
@@ -125,19 +162,22 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   );
                 }
-              }
+              }}
             },
             child: const Text('Login!'),
           ),
           TextButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const HomeView(
-                    )));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeView(),
+                  ),
+                );
               },
               child: const Text('Not registered yet? Register now!'))
         ],
       ),
-    );
+    ),);
   }
 }

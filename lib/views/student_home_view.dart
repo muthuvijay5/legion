@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/circular_list_view.dart';
 import 'package:legion/views/events_list_view.dart';
+import 'package:legion/views/home_view.dart';
 import 'package:legion/views/join_club_list_view.dart';
-import 'package:legion/views/login_view.dart';
+import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/profile_view.dart';
 
 dynamic database_functions = FirebaseMethods();
@@ -27,7 +28,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
             dynamic userList = snapshot.data;
             return StudentHomeViewTmp(widget.email, userList);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -47,20 +48,34 @@ class _StudentHomeViewTmpState extends State<StudentHomeViewTmp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
-        leading: Icon(null),
+        leading: IconButton(
+    icon: const Icon(Icons.logout, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeView(),
+      ),
+    )
+  ),
         title: const Text('Home'),
         centerTitle: true,
         ),
-      body: Center(
+      body: SingleChildScrollView(
+      child: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProfileView(widget.email
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileView(widget.email),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -84,9 +99,12 @@ class _StudentHomeViewTmpState extends State<StudentHomeViewTmp> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => EventsListView(widget.user_json[0]
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventsListView(widget.user_json[0]),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -110,9 +128,12 @@ class _StudentHomeViewTmpState extends State<StudentHomeViewTmp> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CircularListView(widget.user_json[0]
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CircularListView(widget.user_json[0]),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -136,9 +157,12 @@ class _StudentHomeViewTmpState extends State<StudentHomeViewTmp> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => JoinClubListView(widget.user_json[0]
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JoinClubListView(widget.user_json[0]),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -162,6 +186,6 @@ class _StudentHomeViewTmpState extends State<StudentHomeViewTmp> {
         )),
       ]),
     )
-    );
+    ),);
   }
 }

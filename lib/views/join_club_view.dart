@@ -22,13 +22,19 @@ class _JoinClubViewState extends State<JoinClubView> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => JoinClubListView(widget.user_json)))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JoinClubListView(widget.user_json),
+              ),
+            )),
         title: Text(widget.title_text),
         centerTitle: true,
       ),
-      body: JoinClubRedirector(widget.desc, widget.user_json, widget.title_text),
-    );
+      body: SingleChildScrollView(
+      child: JoinClubRedirector(widget.desc, widget.user_json, widget.title_text),
+    ),);
   }
 }
 

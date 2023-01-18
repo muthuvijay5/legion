@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/circular_view.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/student_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -25,7 +27,7 @@ class _CircularListViewState extends State<CircularListView> {
             print(circular_list);
             return CircularPage(circular_list, widget.user_json);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -49,13 +51,19 @@ class _CircularPageState extends State<CircularPage> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ListCirculars(widget.circular_list, widget.user_json)))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StudentHomeView(widget.user_json['email']),
+              ),
+            )),
         title: Text("Circulars"),
         centerTitle: true,
       ),
-      body: ListCirculars(widget.circular_list, widget.user_json),
-    );
+      body: SingleChildScrollView(
+      child: ListCirculars(widget.circular_list, widget.user_json),
+    ),);
   }
 }
 
@@ -119,8 +127,12 @@ class _ACircularState extends State<ACircular> {
           TextButton(
             style: flatButtonStyle,
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => CircularView(widget.url, widget.name, widget.time, widget.user_json)));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CircularView(widget.url, widget.name, widget.time, widget.user_json),
+                ),
+              );
             },
             child: Text(
               'View',

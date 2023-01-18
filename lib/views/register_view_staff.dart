@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/login_view.dart';
 import 'package:legion/views/verifyUser_view.dart';
 import 'package:legion/views/home_view.dart';
 
@@ -83,8 +84,12 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const HomeView()))),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeView(),
+              ),
+            )),
         title: const Text('Register as Staff'),
         centerTitle: true,
       ),
@@ -318,14 +323,12 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                           data['admin'] = true;
                           data['activated'] = false;
                           fbm.createUser(data);
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => VerifyAndAddUser(
-                                        admin: true,
-                                        userType: userType,
-                                      )),
-                              (route) => false);
+                          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyAndAddUser(),
+              ),
+            );
                           print(data);
                           print("Validate");
                         } on FirebaseAuthException catch (e) {
@@ -443,8 +446,12 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                     ),
                     TextButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login', (route) => false);
+                          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginView(),
+              ),
+            );
                         },
                         child: const Text('Already an user? Login!'))
                   ],

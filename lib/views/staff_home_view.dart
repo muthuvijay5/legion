@@ -1,14 +1,10 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:legion/views/CircularForm.dart';
 import 'package:legion/views/EventForm.dart';
+import 'package:legion/views/home_view.dart';
 import 'package:legion/views/list_recruit_member_view.dart';
-import 'package:legion/views/login_view.dart';
 import 'package:legion/views/profile_view.dart';
 import 'package:legion/views/recruit_view.dart';
-import 'package:legion/views/register_view_student.dart';
 import 'package:legion/firebase_methods.dart';
 
 FirebaseMethods some = FirebaseMethods();
@@ -25,20 +21,34 @@ class _StaffHomeViewState extends State<StaffHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
-        leading: Icon(null),
+        leading: IconButton(
+    icon: const Icon(Icons.logout, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeView(),
+      ),
+    )
+  ),
         title: const Text('Home'),
         centerTitle: true,
         ),
       body: Center(
+      child: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProfileView(widget.email
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileView(widget.email),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -62,9 +72,12 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => EventFormView(widget.email
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventFormView(widget.email),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -89,9 +102,12 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CircularFormView(widget.email
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CircularFormView(widget.email),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -115,9 +131,12 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => RecruitView(widget.email
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecruitView(widget.email),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -141,9 +160,12 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         )),
         TextButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ListRecruitMemberView(widget.email
-                    )));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ListRecruitMemberView(widget.email),
+              ),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(5.0),
@@ -167,6 +189,6 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         )),
       ]),
     )
-    );
+    ),);
   }
 }

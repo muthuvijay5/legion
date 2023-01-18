@@ -20,13 +20,19 @@ class _CircularViewState extends State<CircularView> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => CircularListView(widget.user_json)))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CircularListView(widget.user_json),
+              ),
+            )),
         title: Text(widget.title_text),
         centerTitle: true,
       ),
-      body: CircularRedirector(widget.photo, widget.date),
-    );
+      body: SingleChildScrollView(
+      child: CircularRedirector(widget.photo, widget.date),
+    ),);
   }
 }
 

@@ -22,13 +22,19 @@ class _EventsViewState extends State<EventsView> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EventsListView(widget.user_json)))),
+            onPressed: () =>
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventsListView(widget.user_json),
+              ),
+            )),
         title: Text(widget.title_text),
         centerTitle: true,
       ),
-      body: EventsRedirector(widget.photo, widget.date, widget.desc, widget.phone),
-    );
+      body: SingleChildScrollView(
+      child: EventsRedirector(widget.photo, widget.date, widget.desc, widget.phone),
+    ),);
   }
 }
 
@@ -73,13 +79,14 @@ class Events extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: InteractiveViewer(
+      body: SingleChildScrollView(
+      child: InteractiveViewer(
         child: Center(
           child: Image.network(
             url,
           ),
         ),
       ),
-    );
+    ),);
   }
 }

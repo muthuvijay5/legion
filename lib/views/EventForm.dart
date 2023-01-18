@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/staff_home_view.dart';
+
 import 'dept_checkbox.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:legion/firebase_methods.dart';
@@ -28,7 +31,7 @@ class _EventFormViewState extends State<EventFormView> {
             dynamic userList = snapshot.data;
             return EventForm(widget.email, userList);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -73,16 +76,21 @@ class EvenFormData extends State<EventForm> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.white),
     onPressed: () => 
-    Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HomeView(
-                    )))
+    Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StaffHomeView(widget.email),
+              ),
+            )
   ),
         title: const Text('Login'), centerTitle: true,),
-      body: Form(
+      body: SingleChildScrollView(
+      child: Form(
       key: _formKey,
       child: SingleChildScrollView(
 
@@ -288,6 +296,6 @@ class EvenFormData extends State<EventForm> {
         ),
       )),
     )
-    );
+    ),);
   }
 }

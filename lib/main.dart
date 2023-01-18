@@ -15,13 +15,6 @@ void main() {
       primarySwatch: Colors.blue,
     ),
     home: const HomePage(),
-    routes: {
-      '/login': (context) => const LoginView(),
-      '/emailVerify': (context) => VerifyAndAddUser(
-            admin: false,
-            userType: "Student",
-          ),
-    },
   ));
 }
 
@@ -39,7 +32,7 @@ class HomePage extends StatelessWidget {
           case ConnectionState.done:
             return const HomeView();
           default:
-            return const Text('Loading...');
+            return const LoginView();
         }
       },
     );

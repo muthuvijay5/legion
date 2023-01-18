@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/circular_view.dart';
+import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/recruit_member_view.dart';
+import 'package:legion/views/staff_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -24,7 +26,7 @@ class _ListRecruitMemberViewState extends State<ListRecruitMemberView> {
             dynamic userList = snapshot.data;
             return ListRecruitMemberViewTMP(userList[0]);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -50,7 +52,7 @@ class _ListRecruitMemberViewTMPState extends State<ListRecruitMemberViewTMP> {
             dynamic applied_list = snapshot.data;
             return ApplicationsPage(applied_list, widget.user_json);;
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -74,8 +76,13 @@ class _ApplicationsPageState extends State<ApplicationsPage> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ListApplications(widget.applied_list, widget.user_json)))),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StaffHomeView(widget.user_json['email']),
+              ),
+            )),
         title: Text("Applications"),
         centerTitle: true,
       ),
@@ -144,8 +151,12 @@ class _AApplicationState extends State<AApplication> {
           child: TextButton(
             style: flatButtonStyle,
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => RecruitMemberView(widget.email, widget.user_json['club'])));
+              Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecruitMemberView(widget.email, widget.user_json['club']),
+              ),
+            );
             },
             child: Text(
               'View',

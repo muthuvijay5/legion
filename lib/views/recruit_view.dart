@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/staff_home_view.dart';
 import 'dept_checkbox.dart';
 
 dynamic database_functions = FirebaseMethods();
@@ -24,7 +26,7 @@ class _RecruitviewState extends State<RecruitView> {
             dynamic userList = snapshot.data;
             return RenderRecruitView(widget.email, userList);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -51,7 +53,7 @@ class _RecruitViewState extends State<RenderRecruitView> {
             dynamic userList = snapshot.data;
             return RecruitPage(widget.email, userList);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -84,6 +86,16 @@ class _RecruitPageState extends State<RecruitPage> {
     return Scaffold(
       resizeToAvoidBottomInset : false,
       appBar: AppBar(
+        leading: IconButton(
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StaffHomeView(widget.user_json[0]['email']),
+      ),
+    )
+  ),
         title: const Text("Recruiting"),
       ),
       body: SingleChildScrollView(

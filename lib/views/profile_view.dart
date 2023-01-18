@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/staff_home_view.dart';
+import 'package:legion/views/student_home_view.dart';
 
 String name = "";
 String phone_number = "";
@@ -41,7 +44,7 @@ class _ProfileViewState extends State<ProfileView> {
             dynamic userList = snapshot.data;
             return ProfileViewTmp(userList);
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
@@ -177,7 +180,23 @@ class _RenderProfileViewState extends State<RenderProfileView> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
+          leading: IconButton(
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          if (widget.user_json[0]['admin'] == true) {
+            return StaffHomeView(widget.user_json[0]['email']);
+          }
+          return StudentHomeView(widget.user_json[0]['email']);
+        },
+      ),
+    )
+  ),
           title: Text('Profile'),
           actions: <Widget>[
             TextButton(
@@ -190,9 +209,10 @@ class _RenderProfileViewState extends State<RenderProfileView> {
           foregroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        body: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message),
+        body: SingleChildScrollView(
+      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message),
       ),
-    );
+    ),);
   }
 }
 

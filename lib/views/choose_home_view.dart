@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/firebase_options.dart';
+import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/staff_home_view.dart';
 import 'package:legion/views/student_home_view.dart';
 
@@ -31,7 +32,7 @@ class _ChooseViewState extends State<ChooseView> {
               return StudentHomeView(widget.email);
             }
           default:
-            return const Text('Loading...');
+            return const LoadingView();
         }
       },
     );
