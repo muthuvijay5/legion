@@ -7,6 +7,8 @@ import 'package:legion/views/home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
+List img_flag = [false];
+
 bool? phone_number_validator(String? phoneNumber) {
   if (phoneNumber == '' || phoneNumber == null || phoneNumber.length != 10 || !(("6789").contains(phoneNumber[0]))) {
     return false;
@@ -20,61 +22,43 @@ bool? phone_number_validator(String? phoneNumber) {
   return true;
 }
 
-List img_flag = [false];
-
-class RegisterViewStaff extends StatefulWidget {
+class RegisterViewFaculty extends StatefulWidget {
   String userType;
-  RegisterViewStaff({super.key, required this.userType});
+  RegisterViewFaculty({super.key, required this.userType});
   
   @override
-  State<RegisterViewStaff> createState() =>
-      _RegisterViewStaffState(userType);
+  State<RegisterViewFaculty> createState() =>
+      _RegisterViewFacultyState(userType);
 }
 
-class _RegisterViewStaffState extends State<RegisterViewStaff> {
+class _RegisterViewFacultyState extends State<RegisterViewFaculty> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _email;
   late final TextEditingController _password;
-  late final TextEditingController _roll;
   late final TextEditingController _name;
   late final TextEditingController _phone;
   late final TextEditingController _dob;
   late final TextEditingController _photoUrl;
 
-  int startYear = 2023;
-  int endYear = 2026;
-
   Map<String, dynamic> data = {};
 
   // List of items in our dropdown menu
   var gender = ["Male", "Female", "Other"];
-  var clubs = ["Coding Club", "Readers Club", "Nature Club"];
-  var items = [
-    "2023",
-    "2024",
-    "2025",
-    "2026",
-  ];
-  var dept = ["CSE", "IT", "ECE"];
 
   String userType;
-  _RegisterViewStaffState(this.userType);
+  _RegisterViewFacultyState(this.userType);
 
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
-    _roll = TextEditingController();
     _name = TextEditingController();
     _phone = TextEditingController();
     _dob = TextEditingController();
     _photoUrl = TextEditingController();
 
     data["sex"] = gender[0];
-    data["batch"] = items[0];
     img_flag[0] = false;
-    data["club"] = clubs[0];
-    data["dept"] = 'CSE';
 
     super.initState();
   }
@@ -83,7 +67,6 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _roll.dispose();
     _photoUrl.dispose();
     _phone.dispose();
     _dob.dispose();
@@ -113,7 +96,7 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text('Register as Student'),
+                    Text('Register as Faculty'),
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -163,24 +146,6 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                           decoration:
                               const InputDecoration(hintText: 'Password here'),
                           onChanged: (String? value) {
-                          },
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                          controller: _roll,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration:
-                              const InputDecoration(hintText: 'Roll Number'),
-                          onChanged: (String? value) {
-                            data["roll"] = value!;
                           },
                         )),
                     Padding(
@@ -243,75 +208,6 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                             data["dob"] = value!;
                           },
                         )),
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
-                        child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Department',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.toString() == "") {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                          value: dept[0],
-                          items: dept.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items.toString()),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            data["dept"] = value!;
-                          },
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
-                        child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Club',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.toString() == "") {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                          value: clubs[0],
-                          items: clubs.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items.toString()),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            data["club"] = value!;
-                          },
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
-                        child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Batch',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.toString() == "") {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                          value: items[0],
-                          items: items.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items.toString()),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            data["batch"] = value!;
-                          },
-                        )),
                           Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                       child: Center(
@@ -333,7 +229,7 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                           final user = FirebaseAuth.instance.currentUser;
                           await user?.sendEmailVerification();
                           FirebaseMethods fbm = FirebaseMethods();
-                          data['admin'] = true;
+                          data['admin'] = '2';
                           data['activated'] = false;
                           fbm.createUser(data);
                           Navigator.pushReplacement(

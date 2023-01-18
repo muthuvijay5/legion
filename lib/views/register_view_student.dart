@@ -9,6 +9,19 @@ dynamic database_functions = FirebaseMethods();
 
 List img_flag = [false];
 
+bool? phone_number_validator(String? phoneNumber) {
+  if (phoneNumber == '' || phoneNumber == null || phoneNumber.length != 10 || !(("6789").contains(phoneNumber[0]))) {
+    return false;
+  }
+  String numbers = "0123456789";
+  for (int i = 1; i < 10; ++i) {
+    if (!numbers.contains(phoneNumber[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
 class RegisterViewStudent extends StatefulWidget {
   String userType;
   RegisterViewStudent({super.key, required this.userType});
@@ -172,8 +185,8 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                         child: TextFormField(
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
+                            if (value == null || value.isEmpty || phone_number_validator(value) == false) {
+                              return 'Invalid phone number format';
                             }
                             return null;
                           },

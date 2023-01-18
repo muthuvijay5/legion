@@ -185,12 +185,41 @@ class _RecruitPageState extends State<RecruitPage> {
                       );
                     }
                     else {
-                      final_data['club'] = widget.user_json[0]['clubs'][0];
+                      final_data['club'] = widget.user_json[0]['club'];
                       final_data['description'] = data['desc'];
                       final_data['for'] = for_map;
                       print(final_data);
                       try {
                         database_functions.createRecruit(final_data);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StaffHomeView(widget.user_json[0]['email']),
+                          ),
+                        ).then((value) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("Recruitment Posted!"),
+                              content: const Text("Your club's recruitment has been posted successfully!"),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Container(
+                                    color: Colors.blue,
+                                    padding: const EdgeInsets.all(14),
+                                    child: const Text(
+                                      "Okay",
+                                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                      ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        });
                       }
                       catch (e) {
                         showDialog(
