@@ -1,18 +1,13 @@
 import 'dart:io';
-
+import 'dept_checkbox.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:legion/main.dart';
+import 'package:legion/firebase_methods.dart';
 import 'package:flutter/material.dart';
-import 'package:legion/views/circular_page.dart';
 import 'package:legion/views/home_view.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:legion/firebase_options.dart';
 import 'package:image_picker/image_picker.dart';
+
+dynamic database_functions = FirebaseMethods();
+List club_img_flag = [false];
 
 class EventFormView extends StatefulWidget {
   String email;
@@ -50,20 +45,12 @@ class EventForm extends StatefulWidget {
     return EvenFormData();
   }
 }
-enum department { IT , CSE , ECE , all , specify,none}
-
-enum years { First , Second , Third , Four,none }
-
 
 class EvenFormData extends State<EventForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-
   File? file;
   ImagePicker? imagePicker;
   final _formKey = GlobalKey<FormState>();
   File? upfile;
-  department? _site = department.none;
   bool? IT_ft = false;
   bool? ECE_ft = false;
   bool? CSE_ft = false;
@@ -71,22 +58,16 @@ class EvenFormData extends State<EventForm> {
   final eventname = TextEditingController();
   final eventdescription = TextEditingController();
   final phone = TextEditingController();
+  var itCheck = new List.filled(4, false, growable: false);
+  var cseCheck = new List.filled(4, false, growable: false);
+  var eceCheck = new List.filled(4, false, growable: false);
+  Map<String, dynamic> data = {};
+
+  EvenFormData() {
+    data = {"IT": itCheck, "CSE": cseCheck, "ECE": eceCheck};
+  }
 
   File? image;
-  // Future selectImage() async {
-  //   try {
-  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //     if(image == null) return;
-  //     final imageTemp = File(image.path);
-  //     setState(() => this.image = imageTemp);
-  //   }  catch(e) {
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -166,72 +147,9 @@ class EvenFormData extends State<EventForm> {
                 labelText: 'Event Description',
               ),
             ),
-            ListTile(
-              title: const Text('All Departments'),
-              leading: Radio(
-                value: department.all,
-                groupValue: _site,
-                onChanged: (department? value) {
-                  setState(() {
-                    _site = value;
-                    specific_select = false ;
-                  });
-
-                },
-              ),
-            ),
-            ListTile(
-              title: const Text('Specific Departments'),
-              leading: Radio(
-                value: department.specify,
-                groupValue: _site,
-                onChanged: (department? value) {
-                  setState(() {
-                    _site = value;
-                    specific_select = true ;
-                  });
-
-                },
-              ),
-            ),
-            Visibility( visible: specific_select ,child:Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children:<Widget>[
-    Expanded(child: CheckboxListTile(
-                title: const Text('CSE'),
-                value: this.CSE_ft,
-                onChanged: (bool? value) {
-                  setState(() {
-                    this.CSE_ft = value;
-                  });
-                },
-              ),
-            ),
-         Expanded(child:    CheckboxListTile(
-                title: const Text('ECE'),
-                value: this.ECE_ft,
-                onChanged: (bool? value) {
-                  setState(() {
-                    this.ECE_ft = value;
-                  });
-                },
-              ),
-            )
-         ,
-        Expanded(child:   CheckboxListTile(
-            title: const Text('IT'),
-            value: this.IT_ft,
-            onChanged: (bool? value) {
-              setState(() {
-                this.IT_ft = value;
-              });
-            },
+            SizedBox(
+            height: 10,
           ),
-        )
-
-    ]
-            ),
-            ),
             TextFormField(
               controller: phone,
               validator: (value){
@@ -255,94 +173,114 @@ class EvenFormData extends State<EventForm> {
                 ),
               ),
             ),
+            SizedBox(
+              height: 15,
+            ),
+            Column(
+              children: [
+                DeptCheckBox(itCheck, "IT department"),
+                DeptCheckBox(cseCheck, "CSE department"),
+                DeptCheckBox(eceCheck, "ECE department"),
+              ],
+            ),
             new Container(
 
-                padding: const EdgeInsets.only(top: 10.0),
+              padding: const EdgeInsets.only(top: 10.0),
                 child: Center(
                   child: new ElevatedButton(
                     child: const Text('Submit'),
                     onPressed: () async{
+                      if (club_img_flag[0] == false) {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("No Image!"),
+                              content: const Text("Please choose the event poster/image"),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Container(
+                                    color: Colors.blue,
+                                    padding: const EdgeInsets.all(14),
+                                    child: const Text(
+                                      "Okay",
+                                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                      ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                      }
                       final destination = 'files/' + eventname.text;
 
                       if(_formKey.currentState!.validate()){
-
-                        if(_site==department.none){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text("Please select any options")));
-                          return;
+                        Map<String, dynamic> final_data = {};
+                        dynamic for_map = [];
+                        for (int i = 0; i < 4; ++i) {
+                          if (data['IT'][i] == true) {
+                            int int_batch = i + 2023;
+                            String cur_batch = int_batch.toString();
+                            for_map.add("IT $cur_batch");
+                          }
                         }
-                        String message,dept;
-                        dept="";
-                        //         final fileup = File(upfile!.path!);
-                        if(_site==department.all){
-                          dept="all";
+                        for (int i = 0; i < 4; ++i) {
+                          if (data['CSE'][i] == true) {
+                            int cur_batch = i + 2023;
+                            for_map.add("CSE $cur_batch");
+                          }
                         }
-                        else if(this.CSE_ft==false && this.IT_ft==false && this.ECE_ft==false){
-
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please select any options")));
-                         return;
-
+                        for (int i = 0; i < 4; ++i) {
+                          if (data['ECE'][i] == true) {
+                            int cur_batch = i + 2023;
+                            for_map.add("ECE $cur_batch");
+                          }
                         }
-                        if(this.CSE_ft==true){
-
-                          dept+="CSE,";
-
-
+                        
+                        if (for_map.length == 0){
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("No Requirement!"),
+                              content: const Text("Please choose the recruiting candidates for your club"),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Container(
+                                    color: Colors.blue,
+                                    padding: const EdgeInsets.all(14),
+                                    child: const Text(
+                                      "Okay",
+                                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                      ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
-                        if(this.IT_ft==true){
-                          dept+="IT,";
-
-                        }
-                        if(this.ECE_ft==true){
-                          dept+="ECE";
-
-                        }
-
-
-                        try {
-                          // Get a reference to the `feedback` collection
-                          // final collection =
-                          // FirebaseFirestore.instance.collection('feedback');
-                          // //   final ref =FirebaseStorage.instance.ref().child(path);
-                          // // Write the server's timestamp and the user's feedback
-                          // // final stor = FirebaseStorage.instance.ref(destination).child('file/');
-                          // // stor.putFile(image!);
-                          // await collection.doc().set({
-                          //   'timestamp': FieldValue.serverTimestamp(),
-                          //   'eventname': eventname.text,
-                          //   'eventdescription': eventdescription.text,
-                          //   'phone':phone.text,
-                          //   'dept':dept,
-
-                          // });
-                           dynamic userJson = {
+                        else {
+                          try {
+                            dynamic userJson = {
                              'timestamp': FieldValue.serverTimestamp(),
-                            'eventname': eventname.text,
-                            'eventdescription': eventdescription.text,
-                            'phone':phone.text,
-                            'dept':dept,
-                            'imageurl':'',
-                    };
-                
-                      database_functions.createEvent(userJson);
-
-
-
-                          message = 'Feedback sent successfully';
-                        } catch (e) {
-                          message = e.toString();
+                              'eventname': eventname.text,
+                              'eventdescription': eventdescription.text,
+                              'phone':phone.text,
+                              'for': for_map,
+                              'imageurl':'',
+                            };
+                            database_functions.createEvent(userJson);
+                          } catch (e) {
+                            String message = e.toString();
+                            print(message);
+                          }
                         }
-
-                        // Show a snackbar with the result
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(message)));
-
-
-
                       }
-
-
                      },
                   ),
                 )),

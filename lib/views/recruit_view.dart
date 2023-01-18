@@ -3,17 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'dept_checkbox.dart';
 
+dynamic database_functions = FirebaseMethods();
+
 class RecruitView extends StatefulWidget {
   String email;
   RecruitView(this.email, {super.key});
 
   @override
-  State<RecruitView> createState() => _RecruitViewState();
+  State<RecruitView> createState() => _RecruitviewState();
 }
 
-dynamic database_functions = FirebaseMethods();
+class _RecruitviewState extends State<RecruitView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.findUsers('email', widget.email),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic userList = snapshot.data;
+            return RenderRecruitView(widget.email, userList);
+          default:
+            return const Text('Loading...');
+        }
+      },
+    );
+  }
+}
 
-class _RecruitViewState extends State<RecruitView> {
+class RenderRecruitView extends StatefulWidget {
+  String email;
+  dynamic user_json;
+  RenderRecruitView(this.email, this.user_json, {super.key});
+
+  @override
+  State<RenderRecruitView> createState() => _RecruitViewState();
+}
+
+class _RecruitViewState extends State<RenderRecruitView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -36,23 +63,12 @@ class RecruitPage extends StatefulWidget {
   dynamic user_json;
   RecruitPage(this.email, this.user_json, {super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   @override
   State<RecruitPage> createState() => _RecruitPageState();
 }
 
 class _RecruitPageState extends State<RecruitPage> {
   final _formKey = GlobalKey<FormState>();
-  // List of items in our dropdown menu
-  var yearVal = 1;
   var itCheck = new List.filled(4, false, growable: false);
   var cseCheck = new List.filled(4, false, growable: false);
   var eceCheck = new List.filled(4, false, growable: false);
@@ -66,10 +82,12 @@ class _RecruitPageState extends State<RecruitPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         title: const Text("Recruiting"),
       ),
-      body: Form(
+      body: SingleChildScrollView(
+      child: Form(
         key: _formKey,
         child: Column(
           children: [
@@ -108,13 +126,108 @@ class _RecruitPageState extends State<RecruitPage> {
                   ),
                 ),
                 onPressed: () {
-                  // Validate returns true if the form is valid, or false otherwise.
-                  print(data);
                   if (_formKey.currentState!.validate()) {
-                    // If the form is valid, display a snackbar. In the real world,
-                    // you'd often call a server or save the information in a database.
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
+                    Map<String, dynamic> final_data = {};
+                    dynamic for_map = [];
+                    for (int i = 0; i < 4; ++i) {
+                      if (data['IT'][i] == true) {
+                        int int_batch = i + 2023;
+                        String cur_batch = int_batch.toString();
+                        for_map.add("IT $cur_batch");
+                      }
+                    }
+                    for (int i = 0; i < 4; ++i) {
+                      if (data['CSE'][i] == true) {
+                        int cur_batch = i + 2023;
+                        for_map.add("CSE $cur_batch");
+                      }
+                    }
+                    for (int i = 0; i < 4; ++i) {
+                      if (data['ECE'][i] == true) {
+                        int cur_batch = i + 2023;
+                        for_map.add("ECE $cur_batch");
+                      }
+                    }
+                    if (for_map.length == 0) {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text("No Requirement!"),
+                          content: const Text("Please choose the recruiting candidates for your club"),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                              },
+                              child: Container(
+                                color: Colors.blue,
+                                padding: const EdgeInsets.all(14),
+                                child: const Text(
+                                  "Okay",
+                                  style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                  ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    else {
+                      final_data['club'] = widget.user_json[0]['clubs'][0];
+                      final_data['description'] = data['desc'];
+                      final_data['for'] = for_map;
+                      print(final_data);
+                      try {
+                        database_functions.createRecruit(final_data);
+                      }
+                      catch (e) {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text("Close Previous Recruitment!"),
+                            content: const Text("Your club is already recruiting members"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Container(
+                                  color: Colors.blue,
+                                  padding: const EdgeInsets.all(14),
+                                  child: const Text(
+                                    "Okay",
+                                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                    ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }
+                  }
+                  else {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text("No Description!"),
+                        content: const Text("Please give a description for your club recruitment"),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: Container(
+                              color: Colors.blue,
+                              padding: const EdgeInsets.all(14),
+                              child: const Text(
+                                "Okay",
+                                style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }
                 },
@@ -123,7 +236,7 @@ class _RecruitPageState extends State<RecruitPage> {
             ),
           ],
         ),
-      ),
+      ),)
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:legion/firebase_methods.dart';
 
 class DeptCheckBox extends StatefulWidget {
   var itemCheck = new List.filled(4, false, growable: false);
@@ -36,7 +35,6 @@ class _DeptCheckBoxState extends State<DeptCheckBox> {
               setState(() {
                 itemCheck[i] = newValue!;
               });
-              print("${i + 1}, ${itemCheck[i]}");
             },
           ),
       ],

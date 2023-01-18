@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:legion/views/register_view.dart';
+import 'package:legion/views/register_view_student.dart';
+import 'package:legion/views/register_view_staff.dart';
 import 'package:legion/firebase_methods.dart';
 
 FirebaseMethods some = FirebaseMethods();
@@ -30,8 +31,7 @@ class _HomeViewState extends State<HomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => RegisterView(
-                      admin: false,
+                builder: (context) => RegisterViewStudent(
                       userType: "Student",
                     )));
           },
@@ -58,8 +58,7 @@ class _HomeViewState extends State<HomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => RegisterView(
-                      admin: true,
+                builder: (context) => RegisterViewStaff(
                       userType: "Staff",
                     )));
           },
@@ -75,7 +74,6 @@ class _HomeViewState extends State<HomeView> {
               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
               child: Text(
               'Staff',
-              
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,

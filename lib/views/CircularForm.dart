@@ -13,11 +13,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:legion/firebase_options.dart';
 import 'package:image_picker/image_picker.dart';
 
-enum department { IT , CSE , ECE , all , specify,none}
+import 'dept_checkbox.dart';
 
 dynamic database_functions = FirebaseMethods();
 
-enum years { First , Second , Third , Four,none }
+List circular_img_flag = [false];
 
 class CircularFormView extends StatefulWidget {
   String email;
@@ -48,6 +48,7 @@ class _CircularFormViewState extends State<CircularFormView> {
 class CircularForm extends StatefulWidget {
   String email;
   dynamic userList;
+  
   CircularForm(this.email, this.userList, {super.key});
 
   @override
@@ -65,31 +66,22 @@ class CircularFormData extends State<CircularForm>{
   ImagePicker? imagePicker;
   final _formKey = GlobalKey<FormState>();
   File? upfile;
-  years? _year = years.none;
-  bool? fir = false;
-  bool? sec = false;
-  bool? thi = false;
-  bool? fou = false;
+  var itCheck = new List.filled(4, false, growable: false);
+  var cseCheck = new List.filled(4, false, growable: false);
+  var eceCheck = new List.filled(4, false, growable: false);
+  Map<String, dynamic> data = {};
   bool specific_select =false;
-  final deptname = TextEditingController();
-
   final cirname = TextEditingController();
-
   File? image;
-  // Future selectImage() async {
-  //   try {
-  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //     if(image == null) return;
-  //     final imageTemp = File(image.path);
-  //     setState(() => this.image = imageTemp);
-  //   }  catch(e) {
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
+
+  CircularFormData() {
+    data = {"IT": itCheck, "CSE": cseCheck, "ECE": eceCheck};
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         leading: IconButton(
     icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -99,7 +91,8 @@ class CircularFormData extends State<CircularForm>{
                     )))
   ),
         title: const Text('Login'), centerTitle: true,),
-      body: Form(
+      body: SingleChildScrollView(
+      child: Form(
       key: _formKey1,
       child: Container(
         padding: EdgeInsets.all(30),
@@ -138,74 +131,12 @@ class CircularFormData extends State<CircularForm>{
           SizedBox(
             height: 20,
           ),
-          TextFormField(
-            controller: deptname,
-            validator: (val){
-              if (val=="") {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-
-                    width: 2, color: Colors.deepPurpleAccent),
-                borderRadius: BorderRadius.circular(50.0),
-              ),
-              hintText: 'Enter Department Names',
-              labelText: 'Enter Department Names',
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:<Widget>[
-                  Expanded(child: CheckboxListTile(
-                    title: const Text('1st'),
-                    value: this.fir,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        this.fir = value;
-                      });
-                    },
-                  ),
-                  ),
-                  Expanded(child:    CheckboxListTile(
-                    title: const Text('2nd'),
-                    value: this.sec,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        this.sec = value;
-                      });
-                    },
-                  ),
-                  )
-                  ,
-                  Expanded(child:   CheckboxListTile(
-                    title: const Text('3rd'),
-                    value: this.thi,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        this.thi = value;
-                      });
-                    },
-                  ),
-
-                  ),
-                  Expanded(child:   CheckboxListTile(
-                    title: const Text('4th'),
-                    value: this.fou,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        this.fou = value;
-                      });
-                    },
-                  )),
-
-                ]
+          Column(
+              children: [
+                DeptCheckBox(itCheck, "IT department"),
+                DeptCheckBox(cseCheck, "CSE department"),
+                DeptCheckBox(eceCheck, "ECE department"),
+              ],
             ),
           new Container(
 
@@ -214,82 +145,97 @@ class CircularFormData extends State<CircularForm>{
     child: new ElevatedButton(
     child: const Text('Submit'),
     onPressed: () async{
+      if (circular_img_flag[0] == false) {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("No Image!"),
+                              content: const Text("Please choose the circular poster/image"),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Container(
+                                    color: Colors.blue,
+                                    padding: const EdgeInsets.all(14),
+                                    child: const Text(
+                                      "Okay",
+                                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                      ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                      }
         if(_formKey1.currentState!.validate()){
-
           String destination = 'files/Circulars';
-
-          if(_year==department.none){
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("Please select any options")));
-            return;
+          Map<String, dynamic> final_data = {};
+          dynamic for_map = [];
+          for (int i = 0; i < 4; ++i) {
+            if (data['IT'][i] == true) {
+              int int_batch = i + 2023;
+              String cur_batch = int_batch.toString();
+              for_map.add("IT $cur_batch");
+            }
           }
-          String message,dept;
-          dept="";
-          //         final fileup = File(upfile!.path!);
-
-          if(this.fir==false && this.sec==false && this.thi==false && this.fou==false){
-
-
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please select any options")));
-            return;
-
+          for (int i = 0; i < 4; ++i) {
+            if (data['CSE'][i] == true) {
+              int cur_batch = i + 2023;
+              for_map.add("CSE $cur_batch");
+            }
           }
-          if(this.fir==true){
-
-            dept+="1,";
-
-
+          for (int i = 0; i < 4; ++i) {
+            if (data['ECE'][i] == true) {
+              int cur_batch = i + 2023;
+              for_map.add("ECE $cur_batch");
+            }
           }
-          if(this.sec==true){
-            dept+="2,";
+          
 
+          if (for_map.length == 0){
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text("No Requirement!"),
+                content: const Text("Please choose the recruiting candidates for your club"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      color: Colors.blue,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text(
+                        "Okay",
+                        style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
-          if(this.thi==true){
-            dept+="3,";
+          else {
 
-          }
-          if(this.fou==true){
-            dept+="4";
-
-          }
-
-
-          try {
-            // Get a reference to the `feedback` collection
-            // final collection =
-            // FirebaseFirestore.instance.collection('feedback');
-
-            //  final stor = FirebaseStorage.instance.ref(destination).child('file/');
-            //  stor.putFile(image!);
-            // await collection.doc().set({
-            //   'timestamp': FieldValue.serverTimestamp(),
-            //   'departments': deptname.text,
-            //   'years': dept,
-            //   'dept':dept,
-
-                                // });
+              try {
             dynamic userJson = {
+              'name': cirname.text,
                              'timestamp': FieldValue.serverTimestamp(),
-                          'departments': deptname.text,
-                         'years': dept,
-                         'dept':dept,
+                         'for':for_map,
                          'imageurl':'',
                     };
                 
             database_functions.createCircular(userJson);
-
-
-            message = 'Form sent successfully';
           } catch (e) {
-            message = 'Error when sending feedback';
+            print(e);
+          }
           }
 
-          // Show a snackbar with the result
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(message)));
-
-
-
+          
         }
 
 
@@ -309,7 +255,7 @@ class CircularFormData extends State<CircularForm>{
         ),
       ),
 
-    ));
+    )));
   }
 
 }

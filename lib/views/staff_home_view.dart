@@ -4,10 +4,11 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:legion/views/CircularForm.dart';
 import 'package:legion/views/EventForm.dart';
+import 'package:legion/views/list_recruit_member_view.dart';
 import 'package:legion/views/login_view.dart';
 import 'package:legion/views/profile_view.dart';
 import 'package:legion/views/recruit_view.dart';
-import 'package:legion/views/register_view.dart';
+import 'package:legion/views/register_view_student.dart';
 import 'package:legion/firebase_methods.dart';
 
 FirebaseMethods some = FirebaseMethods();
@@ -141,33 +142,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
-                    )));
-          },
-          child: Padding(
-            padding: EdgeInsets.all(5.0),
-            child: Container(
-            width: 200.0,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-              child: Text(
-              'Registrations',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25.0,
-              ),
-            ),)
-          ),
-        )),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => ListRecruitMemberView(widget.email
                     )));
           },
           child: Padding(

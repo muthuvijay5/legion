@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 
-String name = "";
-String phone_number = "";
-dynamic edit_or_display_name;
-dynamic edit_or_display_phone_number;
-
 dynamic database_functions = FirebaseMethods();
-
-dynamic get_user(email) {
-  dynamic val;
-  get_user(email).then((value) => val = value);
-  return val;
-}
 
 final ButtonStyle flatButtonStyle = TextButton.styleFrom(
   shape: const RoundedRectangleBorder(
@@ -20,17 +9,16 @@ final ButtonStyle flatButtonStyle = TextButton.styleFrom(
   ),
 );
 
-
-
-class ProfileView extends StatefulWidget {
+class RecruitMemberView extends StatefulWidget {
   String email;
-  ProfileView(this.email, {super.key});
+  String add_club;
+  RecruitMemberView(this.email, this.add_club, {super.key});
 
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<RecruitMemberView> createState() => _RecruitMemberViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _RecruitMemberViewState extends State<RecruitMemberView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -39,7 +27,7 @@ class _ProfileViewState extends State<ProfileView> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             dynamic userList = snapshot.data;
-            return ProfileViewTmp(userList);
+            return RecruitMemberViewTmp(userList, widget.add_club);
           default:
             return const Text('Loading...');
         }
@@ -48,124 +36,43 @@ class _ProfileViewState extends State<ProfileView> {
   }
 }
 
-bool? name_validator(String? name) {
-  if (name == '' || name == null || name[0] == ' ' || name[name.length - 1] == ' ') {
-    return false;
-  }
-  String alphabets = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  int spaceCount = 0;
-  for (int i = 0; i < name.length; ++i) {
-    if (name[i] == ' ') {
-      if (name[i - 1] == ' ') {
-        return false;
-      }
-      ++spaceCount;
-    } else if (!alphabets.contains(name[i])) {
-      return false;
-    }
-  }
-  if (spaceCount >= 5) {
-    return false;
-  }
-  return true;
-}
-
-bool? phone_number_validator(String? phoneNumber) {
-  if (phoneNumber == '' || phoneNumber == null || phoneNumber.length != 10 || !(("6789").contains(phoneNumber[0]))) {
-    return false;
-  }
-  String numbers = "0123456789";
-  for (int i = 1; i < 10; ++i) {
-    if (!numbers.contains(phoneNumber[i])) {
-      return false;
-    }
-  }
-  return true;
-}
-
-class ProfileViewTmp extends StatelessWidget {
+class RecruitMemberViewTmp extends StatelessWidget {
   dynamic user_json;
-  ProfileViewTmp(this.user_json, {super.key});
+  String add_club;
+  RecruitMemberViewTmp(this.user_json, this.add_club, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return RenderProfileView(user_json);
+    return RenderRecruitMemberView(user_json, add_club);
   }
 }
 
-class RenderProfileView extends StatefulWidget {
+class RenderRecruitMemberView extends StatefulWidget {
   dynamic user_json;
-  RenderProfileView(this.user_json, {super.key});
+  String add_club;
+  RenderRecruitMemberView(this.user_json, this.add_club, {super.key});
 
   @override
-  State<RenderProfileView> createState() => _RenderProfileViewState();
+  State<RenderRecruitMemberView> createState() => _RenderRecruitMemberViewState();
 }
 
-class _RenderProfileViewState extends State<RenderProfileView> {
+class _RenderRecruitMemberViewState extends State<RenderRecruitMemberView> {
   TextEditingController name_controller = TextEditingController();
   TextEditingController phone_number_controller = TextEditingController();
 
   String name = '';
   String phone_number = "";
-  dynamic edit_or_display_name = ProfileName();
-  dynamic edit_or_display_phone_number = ProfilePhoneNumber();
-  dynamic edit_or_save_icon = Icons.edit;
-  dynamic edit_or_save_text = "Edit";
-  String error_message = "";
+  dynamic recruit_icon = Icons.add;
+  dynamic recruit_text = "Recruit";
 
   void assign_values() {
-    print(widget.user_json);
     name = widget.user_json[0]['name'];
-    phone_number = widget.user_json[0]['phone'].toString();
+    phone_number = widget.user_json[0]['phone'];
   }
 
-  dynamic get_name() {
-    return name_controller.text;
-  }
-
-  void clear_name() {
-    name_controller.text = "";
-  }
-
-  dynamic get_phone_number() {
-    return phone_number_controller.text;
-  }
-
-  void clear_phone_number() {
-    phone_number_controller.text = "";
-  }
-
-  void changer() {
-    setState(() {
-      if (edit_or_display_name.runtimeType == NameField) {
-        String newName = get_name();
-        String newPhoneNumber = get_phone_number();
-        if (name_validator(newName) == true && phone_number_validator(newPhoneNumber) == true) {
-          name = newName;
-          phone_number = newPhoneNumber;
-          database_functions.updateProfileDetails(widget.user_json[0]['email'], 'name', name);
-          database_functions.updateProfileDetails(widget.user_json[0]['email'], 'phone', phone_number);
-          clear_name();
-          clear_phone_number();
-          edit_or_display_name = ProfileName();
-          edit_or_display_phone_number = ProfilePhoneNumber();
-          edit_or_save_icon = Icons.edit;
-          edit_or_save_text = "Edit";
-          error_message = "";
-        } else {
-          if (name_validator(newName) == false) {
-            error_message = "Invalid format for name!";
-          } else {
-            error_message = "Invalid format for phone number!";
-          }
-        }
-      } else {
-        edit_or_display_name = NameField(name_controller, get_name, clear_name);
-        edit_or_display_phone_number = PhoneNumberField(phone_number_controller, get_phone_number, clear_phone_number);
-        edit_or_save_icon = Icons.save;
-        edit_or_save_text = "Save";
-      }
-    });
+  void recruit() {
+    database_functions.joinClub(widget.user_json[0]['email'], widget.add_club);
+    database_functions.deleteRegistration('club_application', widget.add_club, widget.user_json[0]['email']);
   }
 
   @override
@@ -182,15 +89,15 @@ class _RenderProfileViewState extends State<RenderProfileView> {
           actions: <Widget>[
             TextButton(
               style: flatButtonStyle,
-              onPressed: () => changer(),
-              child: IconTextPair(edit_or_save_icon, edit_or_save_text, Colors.white,),
+              onPressed: () => recruit(),
+              child: IconTextPair(recruit_icon, recruit_text, Colors.white,),
             ),
           ],
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        body: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message),
+        body: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url']),
       ),
     );
   }
@@ -206,9 +113,6 @@ class ProfilePage extends StatefulWidget {
   String gender;
   List clubs;
   String profile_photo_link;
-  dynamic edit_or_display_name_param;
-  dynamic edit_or_display_phone_number_param;
-  String error_message;
   ProfilePage(this.name_param,
               this.email,
               this.roll_number,
@@ -218,15 +122,7 @@ class ProfilePage extends StatefulWidget {
               this.gender,
               this.clubs,
               this.profile_photo_link,
-              this.edit_or_display_name_param,
-              this.edit_or_display_phone_number_param,
-              this.error_message,
-              {super.key}) {
-    name = this.name_param;
-    phone_number = this.phone_number_param;
-    edit_or_display_name = this.edit_or_display_name_param;
-    edit_or_display_phone_number = edit_or_display_phone_number_param;
-  }
+              {super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -245,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            PrimaryProfileDetails(widget.gender),
+            PrimaryProfileDetails(widget.name_param, widget.phone_number_param, widget.gender),
             Padding(
               padding: EdgeInsets.fromLTRB(0.0, 2.5, 2.5, 0.0),
               child: ProfilePhoto(widget.profile_photo_link),
@@ -255,15 +151,16 @@ class _ProfilePageState extends State<ProfilePage> {
         CollegeDetails(widget.department, widget.batch, widget.email, widget.roll_number),
         ClubTitle(),
         ProfileClubs(widget.clubs),
-        ErrorDisplay(widget.error_message),
       ],
     )]);
   }
 }
 
 class PrimaryProfileDetails extends StatefulWidget {
+  String name;
+  String phone_number;
   String gender;
-  PrimaryProfileDetails(this.gender, {super.key});
+  PrimaryProfileDetails(this.name, this.phone_number, this.gender, {super.key});
 
   @override
   State<PrimaryProfileDetails> createState() => _PrimaryProfileDetailsState();
@@ -277,11 +174,11 @@ class _PrimaryProfileDetailsState extends State<PrimaryProfileDetails> {
       children:<Widget> [
         Padding(
           padding: EdgeInsets.fromLTRB(5.0, 15, 0.0, 2.5),
-          child: edit_or_display_name,
+          child: ProfileName(widget.name),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
-          child: edit_or_display_phone_number,
+          child: ProfilePhoneNumber(widget.phone_number),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
@@ -293,7 +190,8 @@ class _PrimaryProfileDetailsState extends State<PrimaryProfileDetails> {
 }
 
 class ProfileName extends StatefulWidget {
-  ProfileName({super.key});
+  String content;
+  ProfileName(this.content, {super.key});
 
   @override
   State<ProfileName> createState() => _ProfileNameState();
@@ -303,7 +201,7 @@ class _ProfileNameState extends State<ProfileName> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      name,
+      widget.content,
       style: TextStyle(
         fontSize: 25.0,
         color: Colors.black,
@@ -421,7 +319,8 @@ class _ProfileGenderState extends State<ProfileGender> {
 }
 
 class ProfilePhoneNumber extends StatefulWidget {
-  ProfilePhoneNumber({super.key});
+  String phone_number;
+  ProfilePhoneNumber(this.phone_number, {super.key});
 
   @override
   State<ProfilePhoneNumber> createState() => _ProfilePhoneNumberState();
@@ -431,7 +330,7 @@ class _ProfilePhoneNumberState extends State<ProfilePhoneNumber> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      phone_number,
+      widget.phone_number,
       style: TextStyle(
         fontSize: 16.0,
         color: Colors.black,
@@ -685,38 +584,6 @@ class _ClubItemState extends State<ClubItem> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ErrorDisplay extends StatefulWidget {
-  String error_message;
-  ErrorDisplay(this.error_message, {super.key});
-
-  @override
-  State<ErrorDisplay> createState() => _ErrorDisplayState();
-}
-
-class _ErrorDisplayState extends State<ErrorDisplay> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(7.0, 7.0, 7.0, 7.0),
-            child: Text(
-              widget.error_message,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

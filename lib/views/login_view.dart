@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:legion/views/choose_home_view.dart';
 import 'package:legion/views/home_view.dart';
-import 'package:legion/views/staff_home_view.dart';
-import 'package:legion/views/student_home_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -34,10 +33,10 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-    icon: Icon(Icons.arrow_back, color: Colors.white),
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
     onPressed: () => 
     Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HomeView(
+                builder: (context) => const HomeView(
                     )))
   ),
         title: const Text('Login'), centerTitle: true,),
@@ -50,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(hintText: 'Email here'),
           ),
-          Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
+          Padding(padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
           child: TextField(
             controller: _password,
             obscureText: true,
@@ -70,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
                   if (FirebaseAuth.instance.currentUser?.emailVerified ??
                       false) {
                     Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => StaffHomeView(email
+                builder: (context) => ChooseView(email
                     )));
                   } else {
                     // ignore: use_build_context_synchronously
@@ -133,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
           TextButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HomeView(
+                builder: (context) => const HomeView(
                     )));
               },
               child: const Text('Not registered yet? Register now!'))

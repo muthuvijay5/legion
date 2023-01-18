@@ -1,13 +1,12 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:legion/views/circular_page.dart';
-import 'package:legion/views/club_events.dart';
-import 'package:legion/views/login_view.dart';
-import 'package:legion/views/register_view.dart';
-import 'package:legion/views/profile_view.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/circular_list_view.dart';
+import 'package:legion/views/events_list_view.dart';
+import 'package:legion/views/join_club_list_view.dart';
+import 'package:legion/views/login_view.dart';
+import 'package:legion/views/profile_view.dart';
+
+dynamic database_functions = FirebaseMethods();
 
 class StudentHomeView extends StatefulWidget {
   String email;
@@ -18,6 +17,33 @@ class StudentHomeView extends StatefulWidget {
 }
 
 class _StudentHomeViewState extends State<StudentHomeView> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.findUsers('email', widget.email),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic userList = snapshot.data;
+            return StudentHomeViewTmp(widget.email, userList);
+          default:
+            return const Text('Loading...');
+        }
+      },
+    );
+  }
+}
+
+class StudentHomeViewTmp extends StatefulWidget {
+  String email;
+  dynamic user_json;
+  StudentHomeViewTmp(this.email, this.user_json, {super.key});
+
+  @override
+  State<StudentHomeViewTmp> createState() => _StudentHomeViewTmpState();
+}
+
+class _StudentHomeViewTmpState extends State<StudentHomeViewTmp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +85,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ClubEventView(widget.email
+                builder: (context) => EventsListView(widget.user_json[0]
                     )));
           },
           child: Padding(
@@ -73,7 +99,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
               child: Text(
-              'Participate',
+              'Events',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -85,7 +111,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CircularView(widget.email
+                builder: (context) => CircularListView(widget.user_json[0]
                     )));
           },
           child: Padding(
@@ -111,7 +137,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
         TextButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginView(
+                builder: (context) => JoinClubListView(widget.user_json[0]
                     )));
           },
           child: Padding(
