@@ -34,19 +34,20 @@ class _StaffEventViewState extends State<StaffEventView> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-      child: StaffEventRedirector(widget.photo, widget.date, widget.desc, widget.phone, widget.docId, widget.user_json),
+      child: StaffEventRedirector(widget.photo, widget.title_text, widget.date, widget.desc, widget.phone, widget.docId, widget.user_json),
     ),);
   }
 }
 
 class StaffEventRedirector extends StatelessWidget {
-  final String photo;
-  final String date;
-  final String desc;
-  final String phone;
+  String date;
+  String title_text;
+  String photo;
+  String desc;
+  String phone;
   String docId;
   dynamic user_json;
-  StaffEventRedirector(this.photo, this.date, this.desc, this.phone, this.docId, this.user_json, {Key? key})
+  StaffEventRedirector(this.photo, this.title_text, this.date, this.desc, this.phone, this.docId, this.user_json, {Key? key})
       : super(key: key);
 
   @override
@@ -54,7 +55,7 @@ class StaffEventRedirector extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => AStaffEvent(url: photo))));
+            MaterialPageRoute(builder: ((context) => AStaffEvent(this.photo, this.title_text, this.date, this.desc, this.phone, this.docId, this.user_json))));
       },
       child: Column(
         children: [
@@ -112,19 +113,36 @@ class StaffEventRedirector extends StatelessWidget {
 }
 
 class AStaffEvent extends StatelessWidget {
-  final String url;
+  String date;
+  String title_text;
+  String photo;
+  String desc;
+  String phone;
+  String docId;
+  dynamic user_json;
   final transformationController = TransformationController();
-  AStaffEvent({Key? key, required this.url}) : super(key: key);
+  AStaffEvent(this.photo, this.title_text, this.date, this.desc, this.phone, this.docId, this.user_json, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StaffEventView(this.photo, this.title_text, this.date, this.desc, this.phone, this.docId, this.user_json),
+              ),
+            )),
+      ),
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
       child: InteractiveViewer(
         child: Center(
           child: Image.network(
-            url,
+            photo,
           ),
         ),
       ),

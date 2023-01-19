@@ -118,7 +118,7 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text('Register as Student'),
+                    Text('Register as Staff'),
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {

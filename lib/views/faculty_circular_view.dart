@@ -25,32 +25,33 @@ class _FacultyCircularViewState extends State<FacultyCircularView> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => FacultyCircularListView(widget.user_json),
+                builder: (context) => FacultyCircularListView(widget.user_json['email']),
               ),
             )),
         title: Text(widget.title_text),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-      child: FacultyCircularRedirector(widget.photo, widget.date, widget.docId, widget.user_json),
+      child: FacultyCircularRedirector(widget.photo, widget.title_text, widget.date, widget.docId, widget.user_json),
     ),);
   }
 }
 
 class FacultyCircularRedirector extends StatelessWidget {
-  final String photo;
-  final String date;
+  String date;
+  String title_text;
+  String photo;
   String docId;
   dynamic user_json;
-  FacultyCircularRedirector(this.photo, this.date, this.docId, this.user_json, {Key? key})
+  FacultyCircularRedirector(this.photo, this.title_text, this.date, this.docId, this.user_json, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => FacultyCircular(url: photo))));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: ((context) => FacultyCircular(photo, title_text, date, docId, user_json))));
       },
       child: Column(
         children: [
@@ -106,18 +107,33 @@ class FacultyCircularRedirector extends StatelessWidget {
 }
 
 class FacultyCircular extends StatelessWidget {
-  final String url;
+  String date;
+  String title_text;
+  String photo;
+  String docId;
+  dynamic user_json;
   final transformationController = TransformationController();
-  FacultyCircular({Key? key, required this.url}) : super(key: key);
+  FacultyCircular(this.photo, this.title_text, this.date, this.docId, this.user_json, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FacultyCircularView(this.photo, this.title_text, this.date, this.docId, this.user_json),
+              ),
+            )),
+      ),
       backgroundColor: Colors.black,
       body: InteractiveViewer(
         child: Center(
           child: Image.network(
-            url,
+            photo,
           ),
         ),
       ),

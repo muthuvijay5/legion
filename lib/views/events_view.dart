@@ -33,25 +33,27 @@ class _EventsViewState extends State<EventsView> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-      child: EventsRedirector(widget.photo, widget.date, widget.desc, widget.phone),
+      child: EventsRedirector(widget.photo, widget.title_text, widget.date, widget.desc, widget.phone, widget.user_json),
     ),);
   }
 }
 
 class EventsRedirector extends StatelessWidget {
-  final String photo;
-  final String date;
-  final String desc;
-  final String phone;
-  EventsRedirector(this.photo, this.date, this.desc, this.phone, {Key? key})
+  String date;
+  String title_text;
+  String photo;
+  String desc;
+  String phone;
+  dynamic user_json;
+  EventsRedirector(this.photo, this.title_text, this.date, this.desc, this.phone, this.user_json, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => Events(url: photo))));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: ((context) => Events(photo, title_text, date, desc, phone, user_json))));
       },
       child: Column(
         children: [
@@ -71,19 +73,35 @@ class EventsRedirector extends StatelessWidget {
 }
 
 class Events extends StatelessWidget {
-  final String url;
+  String date;
+  String title_text;
+  String photo;
+  String desc;
+  String phone;
+  dynamic user_json;
   final transformationController = TransformationController();
-  Events({Key? key, required this.url}) : super(key: key);
+  Events(this.photo, this.title_text, this.date, this.desc, this.phone, this.user_json, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventsView(photo, title_text, date, desc, phone, user_json),
+              ),
+            )),
+      ),
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
       child: InteractiveViewer(
         child: Center(
           child: Image.network(
-            url,
+            photo,
           ),
         ),
       ),

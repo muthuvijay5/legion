@@ -126,7 +126,7 @@ class _CloseRecruitGUIViewState extends State<CloseRecruitGUIView> {
         body: Center(
             child: Column(
               children: [
-                Text(widget.user_json['club'] + 'is currently not recruiting!'),
+                Text(widget.user_json['club'] + ' is currently not recruiting!'),
               ],
             )
         ),

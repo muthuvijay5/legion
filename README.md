@@ -1,16 +1,47 @@
-# legion
+# Legion - Build for PSG 🎓🏫
 
-A new Flutter project.
+Flutter App for Students, Faculties, Club Members / Staffs to make their workspace more productive. These features are available in following views:
+- Student View
+- Faculty View
+- Staff View
 
-## Getting Started
+## Demo Videos 📹
 
-This project is a starting point for a Flutter application.
+Link : [Google Drive Folder](https://drive.google.com/drive/folders/1iAWppZGFHz00XPf0G2HUqLPiW0KY3530?usp=share_link)
 
-A few resources to get you started if this is your first Flutter project:
+## Views 👀
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Home View Functionality 🏡
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- This page has options for opening account for various roles (ie. Student, Faculty, Staff)
+- Head Admin validates the application
+- In addition to this email verification has also been implemented.
+
+### Students View Functionality ✅
+
+Students have following interfaces:
+- Profile View / Edit
+- See all current events from various clubs and associations(Common as well as department and year specific)
+- Can view all circulars from faculties
+- Can apply to join recruitment of various clubs and associations (Common as well as department and year specific)
+
+### Faculty View Functionality ✅
+
+- Profile View / Edit
+- Announcement (Circular) posting
+- Delete an Announcement
+
+### Staff View Functionality ✅
+
+- Profile View / Edit
+- Host an new Event
+- Delete (Cancel) an Event
+- Start Club Recruitment
+- Close a Recruitment
+- View all Recruitment Applications
+
+### Problems faced currently 🥲
+
+- Images are getting delayed when fetched over web
+- █ Invalid Unicode / 文字 Chinese characters are displayed instead of Flutter Icons (Internal error in Flutter)
+- Default android back is not supported, as there is internal occuring with Navigator

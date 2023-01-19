@@ -31,23 +31,25 @@ class _CircularViewState extends State<CircularView> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-      child: CircularRedirector(widget.photo, widget.date),
+      child: CircularRedirector(widget.photo, widget.title_text, widget.date, widget.user_json),
     ),);
   }
 }
 
 class CircularRedirector extends StatelessWidget {
-  final String photo;
-  final String date;
-  const CircularRedirector(this.photo, this.date, {Key? key})
+  String date;
+  String title_text;
+  String photo;
+  dynamic user_json;
+  CircularRedirector(this.photo, this.title_text, this.date, this.user_json, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => Circular(url: photo))));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: ((context) => Circular(photo, title_text, date, user_json))));
       },
       child: Column(
         children: [
@@ -65,13 +67,27 @@ class CircularRedirector extends StatelessWidget {
 }
 
 class Circular extends StatelessWidget {
-  final String url;
+  String date;
+  String title_text;
+  String url;
+  dynamic user_json;
   final transformationController = TransformationController();
-  Circular({Key? key, required this.url}) : super(key: key);
+  Circular(this.url, this.title_text, this.date, this.user_json, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => 
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CircularView(url, title_text, date, user_json),
+              ),
+            )),
+      ),
       backgroundColor: Colors.black,
       body: InteractiveViewer(
         child: Center(
