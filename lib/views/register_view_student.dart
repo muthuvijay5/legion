@@ -47,7 +47,6 @@ class _RegisterViewState extends State<RegisterViewStudent> {
   int endYear = 2026;
   String dropdownvalue = "2023";
   String genderValue = "Male";
-  
 
   Map<String, dynamic> data = {};
 

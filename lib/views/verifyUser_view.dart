@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/views/home_view.dart';
@@ -49,16 +48,9 @@ class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
               await FirebaseAuth.instance.currentUser?.reload();
               final user = FirebaseAuth.instance.currentUser;
               if (user?.emailVerified ?? false) {
-                //const Text('Email verified!');
                 print('Email verified');
-                final CollectionReference userCollection =
-                    FirebaseFirestore.instance.collection('users');
-                final userJson = {
-                  'name': user?.email,
-                };
-                userCollection.doc(user?.uid).set(userJson);
                 setState(() {
-                  emailMessage = "Email verified and user added";
+                  emailMessage = "E-mail verified and user added";
                 });
               } else {
                 setState(() {

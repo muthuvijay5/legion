@@ -90,7 +90,7 @@ class CircularFormData extends State<CircularForm>{
               ),
             )
   ),
-        title: const Text('Login'), centerTitle: true,),
+        title: const Text('Announcement'), centerTitle: true,),
       body: SingleChildScrollView(
       child: Form(
       key: _formKey1,

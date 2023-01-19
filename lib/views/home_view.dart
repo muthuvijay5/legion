@@ -20,7 +20,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(null),
-        title: const Text('Select User'),
+        title: const Text('Home'),
         centerTitle: true,
         ),
       body: Center(

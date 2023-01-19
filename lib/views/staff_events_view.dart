@@ -27,7 +27,7 @@ class _StaffEventViewState extends State<StaffEventView> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => StaffEventListView(widget.user_json),
+                builder: (context) => StaffEventListView(widget.user_json['email']),
               ),
             )),
         title: Text(widget.title_text),

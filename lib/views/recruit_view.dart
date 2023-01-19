@@ -91,7 +91,8 @@ class _RecruitViewState extends State<RenderRecruitView> {
       ),
     )
   ),
-        title: Text('Recruit')
+        title: Text('Recruit'),
+        centerTitle: true,
     ),
     body: Center(
         child: Text('Recruitment is in progress!')

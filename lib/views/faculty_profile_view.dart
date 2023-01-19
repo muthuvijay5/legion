@@ -158,7 +158,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return FacultyHomeView(widget.user_json[0]['email']);
+                return FacultyProfileView(widget.user_json[0]['email']);
               },
             ),
           );
@@ -202,6 +202,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
     )
   ),
           title: Text('Profile'),
+          centerTitle: true,
           actions: <Widget>[
             TextButton(
               style: flatButtonStyle,
@@ -214,7 +215,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['club'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message, widget.user_json[0]['dob']),
+      child: ProfilePage(name, widget.user_json[0]['email'], phone_number, widget.user_json[0]['sex'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message, widget.user_json[0]['dob']),
       ),
     ),);
   }
@@ -223,12 +224,8 @@ class _RenderProfileViewState extends State<RenderProfileView> {
 class ProfilePage extends StatefulWidget {
   String name_param;
   String email;
-  String roll_number;
   String phone_number_param;
-  String batch;
-  String department;
   String gender;
-  String club;
   String profile_photo_link;
   dynamic edit_or_display_name_param;
   dynamic edit_or_display_phone_number_param;
@@ -236,12 +233,8 @@ class ProfilePage extends StatefulWidget {
   String dob;
   ProfilePage(this.name_param,
               this.email,
-              this.roll_number,
               this.phone_number_param,
-              this.batch,
-              this.department,
               this.gender,
-              this.club,
               this.profile_photo_link,
               this.edit_or_display_name_param,
               this.edit_or_display_phone_number_param,
@@ -278,8 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        CollegeDetails(widget.department, widget.batch, widget.email, widget.roll_number, widget.dob),
-        ProfileClub(widget.club),
+        CollegeDetails(widget.email, widget.dob),
         ErrorDisplay(widget.error_message),
       ],
     ));
@@ -339,12 +331,9 @@ class _ProfileNameState extends State<ProfileName> {
 }
 
 class CollegeDetails extends StatefulWidget {
-  String department;
-  String batch;
   String email;
-  String roll_number;
   String dob;
-  CollegeDetails(this.department, this.batch, this.email, this.roll_number, this.dob, {super.key});
+  CollegeDetails(this.email, this.dob, {super.key});
 
   @override
   State<CollegeDetails> createState() => _CollegeDetailsState();
@@ -360,16 +349,8 @@ class _CollegeDetailsState extends State<CollegeDetails> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(5.0, 25, 0.0, 2.5),
-            child: ProfileDepartmentAndBatch(widget.department, widget.batch),
-          ),
-          Padding(
             padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
             child: ProfileEmail(widget.email),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
-            child: ProfileRollNumber(widget.roll_number),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
@@ -397,30 +378,6 @@ class _ProfileEmailState extends State<ProfileEmail> {
   Widget build(BuildContext context) {
     return Text(
       email,
-      style: TextStyle(
-        fontSize: 16.0,
-        color: Colors.black,
-      ),
-    );
-  }
-}
-
-class ProfileRollNumber extends StatefulWidget {
-  String roll_number;
-  ProfileRollNumber(this.roll_number, {super.key});
-
-  @override
-  State<ProfileRollNumber> createState() => _ProfileRollNumberState(roll_number);
-}
-
-class _ProfileRollNumberState extends State<ProfileRollNumber> {
-  String roll_number;
-  _ProfileRollNumberState(this.roll_number);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      "Roll No. : " + roll_number,
       style: TextStyle(
         fontSize: 16.0,
         color: Colors.black,
@@ -462,49 +419,6 @@ class _ProfilePhoneNumberState extends State<ProfilePhoneNumber> {
   Widget build(BuildContext context) {
     return Text(
       phone_number,
-      style: TextStyle(
-        fontSize: 16.0,
-        color: Colors.black,
-      ),
-    );
-  }
-}
-
-class ProfileBatch extends StatefulWidget {
-  String batch;
-  ProfileBatch(this.batch, {super.key});
-
-  @override
-  State<ProfileBatch> createState() => _ProfileBatchState();
-}
-
-class _ProfileBatchState extends State<ProfileBatch> {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      widget.batch,
-      style: TextStyle(
-        fontSize: 16.0,
-        color: Colors.black,
-      ),
-    );
-  }
-}
-
-class ProfileDepartmentAndBatch extends StatefulWidget {
-  String department;
-  String batch;
-  ProfileDepartmentAndBatch(this.department, this.batch, {super.key});
-
-  @override
-  State<ProfileDepartmentAndBatch> createState() => _ProfileDepartmentAndBatchState();
-}
-
-class _ProfileDepartmentAndBatchState extends State<ProfileDepartmentAndBatch> {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      widget.department + " - " + widget.batch,
       style: TextStyle(
         fontSize: 16.0,
         color: Colors.black,
@@ -631,31 +545,6 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
           ),
         ),
       )
-    );
-  }
-}
-
-class ProfileClub extends StatefulWidget {
-  String club;
-  ProfileClub(this.club, {super.key});
-
-  @override
-  State<ProfileClub> createState() => _ProfileClubsState();
-}
-
-class _ProfileClubsState extends State<ProfileClub> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Text(widget.club,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-      ),
     );
   }
 }

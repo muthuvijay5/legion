@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:legion/views/faculty_profile_view.dart';
 import 'package:legion/views/home_view.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/registrations_list_view.dart';
 
 FirebaseMethods some = FirebaseMethods();
 
@@ -42,7 +42,7 @@ class _HeadHomeViewState extends State<HeadHomeView> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => FacultyProfileView(widget.email),
+                builder: (context) => RegistrationsListView(widget.email),
               ),
             );
           },

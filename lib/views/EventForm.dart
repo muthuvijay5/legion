@@ -91,7 +91,7 @@ class EvenFormData extends State<EventForm> {
               ),
             )
   ),
-        title: const Text('Login'), centerTitle: true,),
+        title: const Text('Announce Event'), centerTitle: true,),
       body: SingleChildScrollView(
       child: Form(
       key: _formKey,

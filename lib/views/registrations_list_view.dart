@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/head_home_view.dart';
 import 'package:legion/views/loading_view.dart';
-import 'package:legion/views/recruit_member_view.dart';
-import 'package:legion/views/staff_home_view.dart';
+import 'package:legion/views/registration_user_view_faculty.dart';
+import 'package:legion/views/registration_user_view_staff.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -78,8 +78,8 @@ class _ListApplicationsState extends State<ListApplications> {
   @override
   Widget build(BuildContext context) {
     List<Widget> final_list = [];
-    for (int i = 0; i < widget.applied_list.length; ++i) {
-      final_list.add(AApplication(widget.applied_list[i]['email'], widget.user_json));
+    for (int i = 0; i < widget.inactive_list.length; ++i) {
+      final_list.add(AApplication(widget.inactive_list[i], widget.email));
     }
     print(final_list);
     return Column(
@@ -91,7 +91,7 @@ class _ListApplicationsState extends State<ListApplications> {
 class AApplication extends StatefulWidget {
   String email;
   dynamic user_json;
-  AApplication(this.email, this.user_json, {super.key});
+  AApplication(this.user_json, this.email, {super.key});
 
   @override
   State<AApplication> createState() => _AApplicationState();
@@ -113,7 +113,7 @@ class _AApplicationState extends State<AApplication> {
           Padding(
           padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
           child: Text(
-            widget.email,
+            widget.user_json['email'],
             style: TextStyle(
               fontSize: 15.0,
               color: Colors.white,
@@ -125,11 +125,18 @@ class _AApplicationState extends State<AApplication> {
             style: flatButtonStyle,
             onPressed: () {
               Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RecruitMemberView(widget.email, widget.user_json['club']),
-              ),
-            );
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    if (widget.user_json['admin'] == '1') {
+                      return RegistrationUserViewStaff(widget.user_json, widget.email);
+                    }
+                    else {
+                      return RegistrationUserViewFaculty(widget.user_json, widget.email);
+                    }
+                  },
+                ),
+              );
             },
             child: Text(
               'View',

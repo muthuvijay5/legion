@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/list_recruit_member_view.dart';
 import 'package:legion/views/loading_view.dart';
-import 'package:legion/views/staff_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -76,6 +75,12 @@ class _RenderRecruitMemberViewState extends State<RenderRecruitMemberView> {
   void recruit() {
     database_functions.joinClub(widget.user_json[0]['email'], widget.add_club);
     database_functions.deleteRegistration('club_application', widget.add_club, widget.user_json[0]['email']);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ListRecruitMemberView(widget.user_json[0]['email']),
+      ),
+    );
   }
 
   @override
@@ -100,10 +105,19 @@ class _RenderRecruitMemberViewState extends State<RenderRecruitMemberView> {
     )
   ),
           title: Text('Profile'),
+          centerTitle: true,
           actions: <Widget>[
             TextButton(
               style: flatButtonStyle,
-              onPressed: () => recruit(),
+              onPressed: () {
+                recruit();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListRecruitMemberView(widget.user_json[0]['email']),
+                  ),
+                );
+              },
               child: IconTextPair(recruit_icon, recruit_text, Colors.white,),
             ),
           ],
@@ -112,7 +126,7 @@ class _RenderRecruitMemberViewState extends State<RenderRecruitMemberView> {
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url']),
+      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url'], widget.user_json[0]['dob']),
       ),
     ),);
   }
@@ -128,6 +142,7 @@ class ProfilePage extends StatefulWidget {
   String gender;
   List clubs;
   String profile_photo_link;
+  String dob;
   ProfilePage(this.name_param,
               this.email,
               this.roll_number,
@@ -137,6 +152,7 @@ class ProfilePage extends StatefulWidget {
               this.gender,
               this.clubs,
               this.profile_photo_link,
+              this.dob,
               {super.key});
 
   @override
@@ -148,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: <Widget>[Column(
+    return SingleChildScrollView(child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,11 +179,11 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        CollegeDetails(widget.department, widget.batch, widget.email, widget.roll_number),
+        CollegeDetails(widget.department, widget.batch, widget.email, widget.roll_number, widget.dob),
         ClubTitle(),
         ProfileClubs(widget.clubs),
       ],
-    )]);
+    ));
   }
 }
 
@@ -231,7 +247,8 @@ class CollegeDetails extends StatefulWidget {
   String batch;
   String email;
   String roll_number;
-  CollegeDetails(this.department, this.batch, this.email, this.roll_number, {super.key});
+  String dob;
+  CollegeDetails(this.department, this.batch, this.email, this.roll_number, this.dob, {super.key});
 
   @override
   State<CollegeDetails> createState() => _CollegeDetailsState();
@@ -257,6 +274,10 @@ class _CollegeDetailsState extends State<CollegeDetails> {
           Padding(
             padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
             child: ProfileRollNumber(widget.roll_number),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(5.0, 2.5, 0.0, 2.5),
+            child: ProfileDOB(widget.dob),
           ),
         ]
       ),
@@ -599,6 +620,27 @@ class _ClubItemState extends State<ClubItem> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ProfileDOB extends StatefulWidget {
+  String dob;
+  ProfileDOB(this.dob, {super.key});
+
+  @override
+  State<ProfileDOB> createState() => _ProfileDOBState();
+}
+
+class _ProfileDOBState extends State<ProfileDOB> {
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'DOB : ' + widget.dob,
+      style: TextStyle(
+        fontSize: 16.0,
+        color: Colors.black,
       ),
     );
   }

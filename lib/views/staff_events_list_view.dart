@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/staff_events_view.dart';
-import 'package:legion/views/student_home_view.dart';
+import 'package:legion/views/staff_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -80,7 +80,7 @@ class _StaffEventPageState extends State<StaffEventPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => StudentHomeView(widget.user_json['email']),
+                builder: (context) => StaffHomeView(widget.user_json['email']),
               ),
             )),
         title: Text("Events"),
