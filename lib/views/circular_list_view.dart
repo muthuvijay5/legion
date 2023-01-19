@@ -81,7 +81,7 @@ class _ListCircularsState extends State<ListCirculars> {
   Widget build(BuildContext context) {
     List<Widget> final_list = [];
     for (int i = 0; i < widget.circular_list.length; ++i) {
-      final_list.add(ACircular(widget.circular_list[i]['name'], widget.circular_list[i]['imageurl'], widget.circular_list[i]['timestamp'].toString(), widget.user_json));
+      final_list.add(ACircular(widget.circular_list[i]['name'], widget.circular_list[i]['imageurl'], widget.circular_list[i]['timestamp'], widget.user_json));
     }
     print(final_list);
     return Column(

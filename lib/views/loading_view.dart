@@ -10,11 +10,9 @@ class LoadingView extends StatefulWidget {
 class _LoadingViewState extends State<LoadingView> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
+    return Container(
+      color: Colors.white,
+      child: Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
           strokeWidth: 5.0,

@@ -1,20 +1,10 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:legion/firebase_methods.dart';
-import 'package:legion/main.dart';
 import 'package:flutter/material.dart';
-import 'package:legion/views/home_view.dart';
+import 'package:legion/views/faculty_home_view.dart';
 import 'package:legion/views/loading_view.dart';
-import 'package:legion/views/staff_home_view.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:legion/firebase_options.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:intl/intl.dart';
 import 'dept_checkbox.dart';
 
 dynamic database_functions = FirebaseMethods();
@@ -27,6 +17,12 @@ class CircularFormView extends StatefulWidget {
 
   @override
   State<CircularFormView> createState() => _CircularFormViewState();
+}
+
+String get_cur_date() {
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('dd/MM/yyyy – kk:mm').format(now);
+  return formattedDate;
 }
 
 class _CircularFormViewState extends State<CircularFormView> {
@@ -90,7 +86,7 @@ class CircularFormData extends State<CircularForm>{
     Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => StaffHomeView(widget.email),
+                builder: (context) => FacultyHomeView(widget.email),
               ),
             )
   ),
@@ -227,12 +223,18 @@ class CircularFormData extends State<CircularForm>{
               try {
             dynamic userJson = {
               'name': cirname.text,
-                             'timestamp': FieldValue.serverTimestamp(),
+                             'timestamp': get_cur_date(),
                          'for':for_map,
                          'imageurl':'',
                     };
                 
             database_functions.createCircular(userJson);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FacultyHomeView(widget.email),
+              ),
+            );
           } catch (e) {
             print(e);
           }
@@ -240,26 +242,12 @@ class CircularFormData extends State<CircularForm>{
 
           
         }
-
-
-
-
     })))
 
 
     ]
-
-
-
-
-
-
-
         ),
       ),
-
     )));
   }
-
 }
-

@@ -3,7 +3,6 @@ import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/faculty_circular_view.dart';
 import 'package:legion/views/faculty_home_view.dart';
 import 'package:legion/views/loading_view.dart';
-import 'package:legion/views/student_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 

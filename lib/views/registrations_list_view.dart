@@ -1,55 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/head_home_view.dart';
 import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/recruit_member_view.dart';
 import 'package:legion/views/staff_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
-class ListRecruitMemberView extends StatefulWidget {
+class RegistrationsListView extends StatefulWidget {
   String email;
-  ListRecruitMemberView(this.email, {super.key});
+  RegistrationsListView(this.email, {super.key});
 
   @override
-  State<ListRecruitMemberView> createState() => _ListRecruitMemberViewState();
+  State<RegistrationsListView> createState() => _RegistrationsListViewState();
 }
 
-class _ListRecruitMemberViewState extends State<ListRecruitMemberView> {
+class _RegistrationsListViewState extends State<RegistrationsListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: database_functions.findUsers('email', widget.email),
+      future: database_functions.getInactiveProfiles(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            dynamic userList = snapshot.data;
-            return ListRecruitMemberViewTMP(userList[0]);
-          default:
-            return const LoadingView();
-        }
-      },
-    );
-  }
-}
-
-class ListRecruitMemberViewTMP extends StatefulWidget {
-  Map user_json;
-  ListRecruitMemberViewTMP(this.user_json, {super.key});
-
-  @override
-  State<ListRecruitMemberViewTMP> createState() => _ListRecruitMemberViewTMPState();
-}
-
-class _ListRecruitMemberViewTMPState extends State<ListRecruitMemberViewTMP> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: database_functions.getClubApplication('club_application', widget.user_json['club']),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            dynamic applied_list = snapshot.data;
-            return ApplicationsPage(applied_list, widget.user_json);;
+            dynamic inactive_list = snapshot.data;
+            return ApplicationsPage(inactive_list, widget.email);
           default:
             return const LoadingView();
         }
@@ -59,9 +34,9 @@ class _ListRecruitMemberViewTMPState extends State<ListRecruitMemberViewTMP> {
 }
 
 class ApplicationsPage extends StatefulWidget {
-  dynamic applied_list;
-  Map user_json;
-  ApplicationsPage(this.applied_list, this.user_json, {Key? key}) : super(key: key);
+  dynamic inactive_list;
+  String email;
+  ApplicationsPage(this.inactive_list, this.email, {Key? key}) : super(key: key);
   @override
   State<ApplicationsPage> createState() => _ApplicationsPageState();
 }
@@ -79,22 +54,21 @@ class _ApplicationsPageState extends State<ApplicationsPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => StaffHomeView(widget.user_json['email']),
+                builder: (context) => HeadHomeView(widget.email),
               ),
             )),
         title: Text("Applications"),
         centerTitle: true,
       ),
-      // body: ListView(children: <Widget>[Wrap(children: [ListApplications(widget.applied_list, widget.user_json)],)],
-      body: ListView(children: [ListApplications(widget.applied_list, widget.user_json)],
+      body: SingleChildScrollView(child: ListApplications(widget.inactive_list, widget.email),
     ),);
   }
 }
 
 class ListApplications extends StatefulWidget {
-  dynamic applied_list;
-  Map user_json;
-  ListApplications(this.applied_list, this.user_json, {super.key});
+  dynamic inactive_list;
+  String email;
+  ListApplications(this.inactive_list, this.email, {super.key});
 
   @override
   State<ListApplications> createState() => _ListApplicationsState();

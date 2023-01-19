@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/join_club_list_view.dart';
 import 'package:legion/views/loading_view.dart';
+import 'package:legion/views/student_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
@@ -116,6 +117,12 @@ class JoinClubRedirector extends StatelessWidget {
                   'email': user_json['email'],
                 };
                 database_functions.applyClub(val);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StudentHomeView(user_json['email']),
+                  ),
+                );
               }
               else {
                 showDialog(

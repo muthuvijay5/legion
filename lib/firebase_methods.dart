@@ -382,4 +382,26 @@ class FirebaseMethods {
       print('Error deleting club_application documents: $e');
     }
   }
+
+  Future<dynamic> getInactiveProfiles() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot = await firestore.collection('profile').where('activated', isEqualTo: false).get();
+    return querySnapshot.docs;
+  }
+
+  Future<void> activateProfile(String email) async {
+    try {
+      CollectionReference profileCollection = FirebaseFirestore.instance.collection('profile');
+      QuerySnapshot profile = await profileCollection.where('email', isEqualTo: email).get();
+      if (profile.docs.isNotEmpty) {
+        DocumentReference profileDoc = profile.docs[0].reference;
+        profileDoc.update({'activated': true});
+        print("Profile with email $email activated successfully");
+      } else {
+        print("No profile found with email $email");
+      }
+    } catch (e) {
+      print("Error activating profile: $e");
+    }
+  }
 }

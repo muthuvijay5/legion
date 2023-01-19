@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/staff_home_view.dart';
-
 import 'dept_checkbox.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:flutter/material.dart';
-import 'package:legion/views/home_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 dynamic database_functions = FirebaseMethods();
 List club_img_flag = [false];
@@ -18,6 +16,12 @@ class EventFormView extends StatefulWidget {
 
   @override
   State<EventFormView> createState() => _EventFormViewState();
+}
+
+String get_cur_date() {
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('dd/MM/yyyy – kk:mm').format(now);
+  return formattedDate;
 }
 
 class _EventFormViewState extends State<EventFormView> {
@@ -273,7 +277,7 @@ class EvenFormData extends State<EventForm> {
                         else {
                           try {
                             dynamic userJson = {
-                             'timestamp': FieldValue.serverTimestamp(),
+                              'timestamp': get_cur_date(),
                               'eventname': eventname.text,
                               'eventdescription': eventdescription.text,
                               'phone':phone.text,
@@ -281,6 +285,12 @@ class EvenFormData extends State<EventForm> {
                               'imageurl':'',
                             };
                             database_functions.createEvent(userJson);
+                            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StaffHomeView(widget.email),
+              ),
+            );
                           } catch (e) {
                             String message = e.toString();
                             print(message);

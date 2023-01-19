@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:legion/views/CircularForm.dart';
-import 'package:legion/views/EventForm.dart';
-import 'package:legion/views/home_view.dart';
-import 'package:legion/views/list_recruit_member_view.dart';
 import 'package:legion/views/loading_view.dart';
-import 'package:legion/views/profile_view.dart';
-import 'package:legion/views/recruit_view.dart';
 import 'package:legion/firebase_methods.dart';
-import 'package:legion/views/staff_events_list_view.dart';
 import 'package:legion/views/staff_home_view.dart';
 
 dynamic database_functions = FirebaseMethods();

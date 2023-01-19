@@ -81,7 +81,7 @@ class _ListEventsState extends State<ListEvents> {
   Widget build(BuildContext context) {
     List<Widget> final_list = [];
     for (int i = 0; i < widget.events_list.length; ++i) {
-      final_list.add(AEvent(widget.events_list[i]['eventname'], widget.events_list[i]['imageurl'], widget.events_list[i]['timestamp'].toString(), widget.user_json, widget.events_list[i]['eventdescription'], widget.events_list[i]['phone']));
+      final_list.add(AEvent(widget.events_list[i]['eventname'], widget.events_list[i]['imageurl'], widget.events_list[i]['timestamp'], widget.user_json, widget.events_list[i]['eventdescription'], widget.events_list[i]['phone']));
     }
     print(final_list);
     return Column(

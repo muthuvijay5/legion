@@ -154,6 +154,14 @@ class _RenderProfileViewState extends State<RenderProfileView> {
           edit_or_save_icon = Icons.edit;
           edit_or_save_text = "Edit";
           error_message = "";
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return FacultyHomeView(widget.user_json[0]['email']);
+              },
+            ),
+          );
         } else {
           if (name_validator(newName) == false) {
             error_message = "Invalid format for name!";
