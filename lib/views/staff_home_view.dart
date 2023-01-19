@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:legion/views/CircularForm.dart';
 import 'package:legion/views/EventForm.dart';
+import 'package:legion/views/close_recruit_view.dart';
 import 'package:legion/views/home_view.dart';
 import 'package:legion/views/list_recruit_member_view.dart';
-import 'package:legion/views/profile_view.dart';
 import 'package:legion/views/recruit_view.dart';
 import 'package:legion/firebase_methods.dart';
+import 'package:legion/views/staff_events_list_view.dart';
+import 'package:legion/views/staff_profile_view.dart';
 
 FirebaseMethods some = FirebaseMethods();
 
@@ -46,7 +47,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfileView(widget.email),
+                builder: (context) => StaffProfileView(widget.email),
               ),
             );
           },
@@ -91,7 +92,6 @@ class _StaffHomeViewState extends State<StaffHomeView> {
               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
               child: Text(
               'Host Event',
-              
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -105,7 +105,7 @@ class _StaffHomeViewState extends State<StaffHomeView> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => CircularFormView(widget.email),
+                builder: (context) => StaffEventListView(widget.email),
               ),
             );
           },
@@ -120,14 +120,14 @@ class _StaffHomeViewState extends State<StaffHomeView> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
               child: Text(
-              'Anouncement',
+              'Delete Events',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 25.0,
               ),
-            ),)
-          ),
+            ),
+          )),
         )),
         TextButton(
           onPressed: () {
@@ -150,6 +150,35 @@ class _StaffHomeViewState extends State<StaffHomeView> {
               padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
               child: Text(
               'Recruit',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+              ),
+            ),)
+          ),
+        )),
+        TextButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CloseRecruitView(widget.email),
+              ),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Container(
+            width: 200.0,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+              child: Text(
+              'Close Recruitment',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/views/loading_view.dart';
@@ -24,7 +25,35 @@ class _RecruitviewState extends State<RecruitView> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             dynamic userList = snapshot.data;
-            return RenderRecruitView(widget.email, userList);
+            return FindRecruitOpen(widget.email, userList[0]);
+          default:
+            return const LoadingView();
+        }
+      },
+    );
+  }
+}
+
+class FindRecruitOpen extends StatefulWidget {
+  String email;
+  dynamic user_json;
+  FindRecruitOpen(this.email, this.user_json, {super.key});
+
+  @override
+  State<FindRecruitOpen> createState() => _FindRecruitOpenState();
+}
+
+class _FindRecruitOpenState extends State<FindRecruitOpen> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: database_functions.recruitOpen(widget.user_json['club']),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            dynamic isOpen = snapshot.data;
+            bool is_open = isOpen;
+            return RenderRecruitView(widget.email, widget.user_json, is_open);
           default:
             return const LoadingView();
         }
@@ -36,7 +65,8 @@ class _RecruitviewState extends State<RecruitView> {
 class RenderRecruitView extends StatefulWidget {
   String email;
   dynamic user_json;
-  RenderRecruitView(this.email, this.user_json, {super.key});
+  bool is_open;
+  RenderRecruitView(this.email, this.user_json, this.is_open, {super.key});
 
   @override
   State<RenderRecruitView> createState() => _RecruitViewState();
@@ -45,18 +75,29 @@ class RenderRecruitView extends StatefulWidget {
 class _RecruitViewState extends State<RenderRecruitView> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: database_functions.findUsers('email', widget.email),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            dynamic userList = snapshot.data;
-            return RecruitPage(widget.email, userList);
-          default:
-            return const LoadingView();
-        }
-      },
-    );
+    if (widget.is_open == false) {
+      return RecruitPage(widget.email, widget.user_json);
+    }
+    else {
+      return Scaffold(
+    appBar: AppBar(
+      leading: IconButton(
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StaffHomeView(widget.user_json['email']),
+      ),
+    )
+  ),
+        title: Text('Recruit')
+    ),
+    body: Center(
+        child: Text('Recruitment is in progress!')
+    ),
+);
+    }
   }
 }
 
@@ -92,7 +133,7 @@ class _RecruitPageState extends State<RecruitPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => StaffHomeView(widget.user_json[0]['email']),
+        builder: (context) => StaffHomeView(widget.user_json['email']),
       ),
     )
   ),
@@ -185,7 +226,7 @@ class _RecruitPageState extends State<RecruitPage> {
                       );
                     }
                     else {
-                      final_data['club'] = widget.user_json[0]['club'];
+                      final_data['club'] = widget.user_json['club'];
                       final_data['description'] = data['desc'];
                       final_data['for'] = for_map;
                       print(final_data);
@@ -194,32 +235,9 @@ class _RecruitPageState extends State<RecruitPage> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => StaffHomeView(widget.user_json[0]['email']),
+                            builder: (context) => StaffHomeView(widget.user_json['email']),
                           ),
-                        ).then((value) {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text("Recruitment Posted!"),
-                              content: const Text("Your club's recruitment has been posted successfully!"),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  child: Container(
-                                    color: Colors.blue,
-                                    padding: const EdgeInsets.all(14),
-                                    child: const Text(
-                                      "Okay",
-                                      style: TextStyle(color: Colors.white, fontSize: 20.0),
-                                      ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        });
+                        );
                       }
                       catch (e) {
                         showDialog(

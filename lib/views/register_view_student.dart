@@ -7,7 +7,7 @@ import 'package:legion/views/home_view.dart';
 
 dynamic database_functions = FirebaseMethods();
 
-List img_flag = [false];
+List student_img_flag = [false];
 
 bool? phone_number_validator(String? phoneNumber) {
   if (phoneNumber == '' || phoneNumber == null || phoneNumber.length != 10 || !(("6789").contains(phoneNumber[0]))) {
@@ -22,11 +22,15 @@ bool? phone_number_validator(String? phoneNumber) {
   return true;
 }
 
+bool? isValidDate(String date) {
+  final RegExp dateExp = new RegExp(r"((0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4})");
+  return dateExp.hasMatch(date);
+}
+
 class RegisterViewStudent extends StatefulWidget {
   String userType;
   RegisterViewStudent({super.key, required this.userType});
   @override
-  // ignore: no_logic_in_create_state
   State<RegisterViewStudent> createState() => _RegisterViewState(userType);
 }
 
@@ -73,7 +77,7 @@ class _RegisterViewState extends State<RegisterViewStudent> {
     data["batch"] = dropdownvalue;
     data["img_url"] = '';
     data["dept"] = 'CSE';
-    img_flag[0] = false;
+    student_img_flag[0] = false;
     data['clubs'] = [];
     super.initState();
   }
@@ -227,8 +231,8 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                         child: TextFormField(
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
+                            if (value == null || value.isEmpty || isValidDate(value) == false) {
+                              return 'DOB format: dd/mm/yyyy';
                             }
                             return null;
                           },
@@ -236,7 +240,7 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                           enableSuggestions: false,
                           keyboardType: TextInputType.datetime,
                           autocorrect: false,
-                          decoration: const InputDecoration(hintText: 'DOB'),
+                          decoration: const InputDecoration(hintText: 'DOB dd/mm/yyyy'),
                           onChanged: (String? value) {
                             data["dob"] = value!;
                           },
@@ -291,13 +295,13 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                       child: Center(
                         child: ElevatedButton(
-                            onPressed: database_functions.selectImageUser,
+                            onPressed: () async => await database_functions.selectImageUser('0'),
                             child: Text('Choose Profile Picture')),
                       ),
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        if (img_flag[0] == true && validate() == true)
+                        if (student_img_flag[0] == true && validate() == true)
                         {
                           final email = _email.text;
                           final password = _password.text;
@@ -308,7 +312,7 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                             final user = FirebaseAuth.instance.currentUser;
                             await user?.sendEmailVerification();
                             FirebaseMethods fbm = FirebaseMethods();
-                            data['admin'] = false;
+                            data['admin'] = '0';
                             data['activated'] = true;
                             fbm.createUser(data);
                             print(data);

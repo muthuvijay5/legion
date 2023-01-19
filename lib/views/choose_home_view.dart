@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
 import 'package:legion/firebase_options.dart';
+import 'package:legion/views/faculty_home_view.dart';
 import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/staff_home_view.dart';
 import 'package:legion/views/student_home_view.dart';
@@ -25,11 +26,14 @@ class _ChooseViewState extends State<ChooseView> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             dynamic userList = snapshot.data;
-            if (userList[0]['admin'] == true) {
+            if (userList[0]['admin'] == '1') {
               return StaffHomeView(widget.email);
             }
-            else {
+            else if (userList[0]['admin'] == '0') {
               return StudentHomeView(widget.email);
+            }
+            else {
+              return FacultyHomeView(widget.email);
             }
           default:
             return const LoadingView();

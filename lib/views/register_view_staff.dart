@@ -20,7 +20,12 @@ bool? phone_number_validator(String? phoneNumber) {
   return true;
 }
 
-List img_flag = [false];
+bool? isValidDate(String date) {
+  final RegExp dateExp = new RegExp(r"((0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4})");
+  return dateExp.hasMatch(date);
+}
+
+List staff_img_flag = [false];
 
 class RegisterViewStaff extends StatefulWidget {
   String userType;
@@ -72,7 +77,7 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
 
     data["sex"] = gender[0];
     data["batch"] = items[0];
-    img_flag[0] = false;
+    staff_img_flag[0] = false;
     data["club"] = clubs[0];
     data["dept"] = 'CSE';
 
@@ -229,8 +234,8 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                         child: TextFormField(
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
+                            if (value == null || value.isEmpty || isValidDate(value) == false) {
+                              return 'DOB format: dd/mm/yyyy';
                             }
                             return null;
                           },
@@ -238,7 +243,7 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                           enableSuggestions: false,
                           keyboardType: TextInputType.datetime,
                           autocorrect: false,
-                          decoration: const InputDecoration(hintText: 'DOB'),
+                          decoration: const InputDecoration(hintText: 'DOB dd/mm/yyyy'),
                           onChanged: (String? value) {
                             data["dob"] = value!;
                           },
@@ -316,13 +321,13 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                       child: Center(
                         child: ElevatedButton(
-                            onPressed: database_functions.selectImageUser,
+                            onPressed: () async => await database_functions.selectImageUser('1'),
                             child: Text('Choose Profile Picture')),
                       ),
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        if (img_flag[0] == true && validate() == true)
+                        if (staff_img_flag[0] == true && validate() == true)
                         {
                         final email = _email.text;
                         final password = _password.text;
@@ -333,7 +338,7 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                           final user = FirebaseAuth.instance.currentUser;
                           await user?.sendEmailVerification();
                           FirebaseMethods fbm = FirebaseMethods();
-                          data['admin'] = true;
+                          data['admin'] = '1';
                           data['activated'] = false;
                           fbm.createUser(data);
                           Navigator.pushReplacement(

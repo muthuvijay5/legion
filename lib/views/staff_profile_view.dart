@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:legion/firebase_methods.dart';
-import 'package:legion/views/faculty_home_view.dart';
 import 'package:legion/views/loading_view.dart';
 import 'package:legion/views/staff_home_view.dart';
-import 'package:legion/views/student_home_view.dart';
 
 String name = "";
 String phone_number = "";
@@ -26,15 +24,15 @@ final ButtonStyle flatButtonStyle = TextButton.styleFrom(
 
 
 
-class ProfileView extends StatefulWidget {
+class StaffProfileView extends StatefulWidget {
   String email;
-  ProfileView(this.email, {super.key});
+  StaffProfileView(this.email, {super.key});
 
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<StaffProfileView> createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _ProfileViewState extends State<StaffProfileView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -190,13 +188,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          if (widget.user_json[0]['admin'] == '1') {
-            return StaffHomeView(widget.user_json[0]['email']);
-          }
-          else if (widget.user_json[0]['admin'] == '1') {
-            return StudentHomeView(widget.user_json[0]['email']);
-          }
-          return FacultyHomeView(widget.user_json[0]['email']);
+          return StaffHomeView(widget.user_json[0]['email']);
         },
       ),
     )
@@ -214,7 +206,7 @@ class _RenderProfileViewState extends State<RenderProfileView> {
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['clubs'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message, widget.user_json[0]['dob']),
+      child: ProfilePage(name, widget.user_json[0]['email'], widget.user_json[0]['roll'], phone_number, widget.user_json[0]['batch'], widget.user_json[0]['dept'], widget.user_json[0]['sex'], widget.user_json[0]['club'], widget.user_json[0]['img_url'], edit_or_display_name, edit_or_display_phone_number, error_message, widget.user_json[0]['dob']),
       ),
     ),);
   }
@@ -228,7 +220,7 @@ class ProfilePage extends StatefulWidget {
   String batch;
   String department;
   String gender;
-  List clubs;
+  String club;
   String profile_photo_link;
   dynamic edit_or_display_name_param;
   dynamic edit_or_display_phone_number_param;
@@ -241,7 +233,7 @@ class ProfilePage extends StatefulWidget {
               this.batch,
               this.department,
               this.gender,
-              this.clubs,
+              this.club,
               this.profile_photo_link,
               this.edit_or_display_name_param,
               this.edit_or_display_phone_number_param,
@@ -279,12 +271,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         CollegeDetails(widget.department, widget.batch, widget.email, widget.roll_number, widget.dob),
-        ClubTitle(),
-        ProfileClubs(widget.clubs),
+        ProfileClub(widget.club),
         ErrorDisplay(widget.error_message),
       ],
-    )
-    );
+    ));
   }
 }
 
@@ -515,27 +505,6 @@ class _ProfileDepartmentAndBatchState extends State<ProfileDepartmentAndBatch> {
   }
 }
 
-class ProfileDOB extends StatefulWidget {
-  String dob;
-  ProfileDOB(this.dob, {super.key});
-
-  @override
-  State<ProfileDOB> createState() => _ProfileDOBState();
-}
-
-class _ProfileDOBState extends State<ProfileDOB> {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'DOB : ' + widget.dob,
-      style: TextStyle(
-        fontSize: 16.0,
-        color: Colors.black,
-      ),
-    );
-  }
-}
-
 class ProfilePhoto extends StatefulWidget {
   String profile_image_url;
   ProfilePhoto(this.profile_image_url, {super.key});
@@ -658,86 +627,26 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   }
 }
 
-class ProfileClubs extends StatefulWidget {
-  List clubs;
-  ProfileClubs(this.clubs, {super.key});
+class ProfileClub extends StatefulWidget {
+  String club;
+  ProfileClub(this.club, {super.key});
 
   @override
-  State<ProfileClubs> createState() => _ProfileClubsState();
+  State<ProfileClub> createState() => _ProfileClubsState();
 }
 
-class _ProfileClubsState extends State<ProfileClubs> {
+class _ProfileClubsState extends State<ProfileClub> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> clubList = [];
-    for (int i = 0; i < widget.clubs.length; ++i) {
-      clubList.add(ClubItem(widget.clubs[i]));
-    }
     return Container(
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Colors.blue,
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Wrap(
-        children: clubList,
-      ),
-    );
-  }
-}
-
-class ClubTitle extends StatefulWidget {
-  const ClubTitle({super.key});
-
-  @override
-  State<ClubTitle> createState() => _ClubTitleState();
-}
-
-class _ClubTitleState extends State<ClubTitle> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(5.0, 25, 0.0, 2.5),
-      child: Text(
-        "Clubs",
-        style: TextStyle(
-          fontSize: 20.0,
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
-
-class ClubItem extends StatefulWidget {
-  String club_name;
-  ClubItem(this.club_name, {super.key});
-
-  @override
-  State<ClubItem> createState() => _ClubItemState();
-}
-
-class _ClubItemState extends State<ClubItem> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          color: Colors.white,
-        ),
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(7.0, 7.0, 7.0, 7.0),
-            child: Text(
-            widget.club_name,
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-            ),
-          ),
-        ),
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Text(widget.club,
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
       ),
     );
   }
@@ -770,6 +679,27 @@ class _ErrorDisplayState extends State<ErrorDisplay> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ProfileDOB extends StatefulWidget {
+  String dob;
+  ProfileDOB(this.dob, {super.key});
+
+  @override
+  State<ProfileDOB> createState() => _ProfileDOBState();
+}
+
+class _ProfileDOBState extends State<ProfileDOB> {
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'DOB : ' + widget.dob,
+      style: TextStyle(
+        fontSize: 16.0,
+        color: Colors.black,
       ),
     );
   }

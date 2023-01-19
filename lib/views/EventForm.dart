@@ -57,7 +57,6 @@ class EvenFormData extends State<EventForm> {
   bool? IT_ft = false;
   bool? ECE_ft = false;
   bool? CSE_ft = false;
-  bool specific_select =false;
   final eventname = TextEditingController();
   final eventdescription = TextEditingController();
   final phone = TextEditingController();
@@ -223,7 +222,6 @@ class EvenFormData extends State<EventForm> {
                           );
                           return;
                       }
-                      final destination = 'files/' + eventname.text;
 
                       if(_formKey.currentState!.validate()){
                         Map<String, dynamic> final_data = {};

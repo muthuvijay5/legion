@@ -3,8 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:legion/firebase_options.dart';
 import 'package:legion/views/register_view_student.dart';
+import 'package:legion/views/register_view_staff.dart';
+import 'package:legion/views/register_view_faculty.dart';
 import 'package:legion/views/EventForm.dart';
 import 'package:legion/views/CircularForm.dart';
 import 'package:image_picker/image_picker.dart';
@@ -139,14 +142,11 @@ class FirebaseMethods {
   }
 }
 
-  Future<bool> createCircular(dynamic circularJson) {
+  Future<bool> createCircular(dynamic circularJson) async {
     circularJson['imageurl']=circularurl;
     CollectionReference circularCollectionRef =
         FirebaseFirestore.instance.collection('circular');
-    return circularCollectionRef
-        .doc(circularJson['imgLink'])
-        .set(circularJson)
-        .then((value) {
+    return circularCollectionRef.add(circularJson).then((value) {
       print('Circular Added');
       return true;
     }).catchError((error) {
@@ -174,7 +174,7 @@ class FirebaseMethods {
     eventJson['imageurl']=eventurl;
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
-    return eventCollection.doc(eventJson['title']).set(eventJson).then((value) {
+    return eventCollection.add(eventJson).then((value) {
       print("Event Added");
       return true;
     }).catchError((error) {
@@ -182,22 +182,8 @@ class FirebaseMethods {
       return false;
     });
   }
-  Future selectImageCircular() async {
-    try {
-      dynamic image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
-      final imageTemp = File(image.path);
-      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
-      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
 
-      circularurl = await (await uploadTask).ref.getDownloadURL();
-      circular_img_flag[0] = true;
-    }  catch(e) {
-      print('Failed to pick image: $e');
-    }
-  }
-
-  Future selectImageUser() async {
+  Future selectImageUser(String admin) async {
     try {
       dynamic image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
@@ -206,8 +192,32 @@ class FirebaseMethods {
       UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
 
       userurl = await (await uploadTask).ref.getDownloadURL();
-      img_flag[0] = true;
+      if (admin == '0') {
+        student_img_flag[0] = true;
+      }
+      else if (admin == '1') {
+        staff_img_flag[0] = true;
+      }
+      else {
+        faculty_img_flag[0] = true;
+      }
     } catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+  Future selectImageCircular() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+      final Reference storageReference = FirebaseStorage.instance.ref().child("products");
+      UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
+
+      circularurl = await (await uploadTask).ref.getDownloadURL();
+      print(circularurl);
+      circular_img_flag[0] = true;
+    }  catch(e) {
       print('Failed to pick image: $e');
     }
   }
@@ -217,8 +227,7 @@ class FirebaseMethods {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
       final imageTemp = File(image.path);
-     // setState(() => this.image = imageTemp);
-      final  Reference storageReference = FirebaseStorage.instance.ref().child("products");
+      final Reference storageReference = FirebaseStorage.instance.ref().child("products");
       UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
 
       eventurl = await (await uploadTask).ref.getDownloadURL();
@@ -316,5 +325,61 @@ class FirebaseMethods {
         await firestore.collection(collectionName).doc(doc.id).delete();
       });
     });
+  }
+
+  Future<dynamic> getAllDocumentsWithId(String collectionName) async {
+    List<Map<String, dynamic>> documents = [];
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(collectionName).get();
+    for (DocumentSnapshot document in snapshot.docs) {
+            dynamic data = document.data();
+            data['id'] = document.id;
+            documents.add(data);
+        }
+        return documents;
+  }
+
+  Future<bool> checkApplicationExists(String email, String club_name) async {
+      var query = FirebaseFirestore.instance
+          .collection('club_application')
+          .where('email', isEqualTo: email)
+          .where('club', isEqualTo: club_name)
+          .limit(1);
+
+      var snapshot = await query.get();
+      return snapshot.docs.length == 1;
+  }
+
+  Future<bool> recruitOpen(String club_name) async {
+      var query = FirebaseFirestore.instance
+          .collection('recruit')
+          .where('club', isEqualTo: club_name)
+          .limit(1);
+
+      var snapshot = await query.get();
+      return snapshot.docs.length == 1;
+  }
+
+  Future<void> deleteRecruitsByClub(String clubName) async {
+    CollectionReference recruitCollection = FirebaseFirestore.instance.collection('recruit');
+    QuerySnapshot snapshot = await recruitCollection.where('club', isEqualTo: clubName).get();
+    List<DocumentSnapshot> docs = snapshot.docs;
+    for (var doc in docs) {
+      await doc.reference.delete();
+    }
+    print('Deleted all recruits of club $clubName');
+    deleteClubApplications(clubName);
+  }
+
+  Future<void> deleteClubApplications(String club_name) async {
+    try {
+      CollectionReference clubApplicationCollection = FirebaseFirestore.instance.collection('club_application');
+      QuerySnapshot querySnapshot = await clubApplicationCollection.where('club', isEqualTo: club_name).get();
+      querySnapshot.docs.forEach((document) async {
+        await document.reference.delete();
+      });
+      print('Successfully');
+    } catch (e) {
+      print('Error deleting club_application documents: $e');
+    }
   }
 }

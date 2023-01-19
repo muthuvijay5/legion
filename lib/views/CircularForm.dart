@@ -72,7 +72,6 @@ class CircularFormData extends State<CircularForm>{
   var cseCheck = new List.filled(4, false, growable: false);
   var eceCheck = new List.filled(4, false, growable: false);
   Map<String, dynamic> data = {};
-  bool specific_select =false;
   final cirname = TextEditingController();
   File? image;
 
@@ -176,7 +175,6 @@ class CircularFormData extends State<CircularForm>{
                           return;
                       }
         if(_formKey1.currentState!.validate()){
-          String destination = 'files/Circulars';
           Map<String, dynamic> final_data = {};
           dynamic for_map = [];
           for (int i = 0; i < 4; ++i) {
