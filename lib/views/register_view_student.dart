@@ -314,8 +314,8 @@ class _RegisterViewState extends State<RegisterViewStudent> {
                             data['admin'] = '0';
                             data['activated'] = true;
                             fbm.createUser(data);
-                            print(data);
-                            print("Validate");
+                            // print(data);
+                            // print("Validate");
                             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

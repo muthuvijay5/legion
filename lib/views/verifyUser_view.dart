@@ -48,7 +48,7 @@ class _VerifyAndAddUserState extends State<VerifyAndAddUser> {
               await FirebaseAuth.instance.currentUser?.reload();
               final user = FirebaseAuth.instance.currentUser;
               if (user?.emailVerified ?? false) {
-                print('Email verified');
+                // print('Email verified');
                 setState(() {
                   emailMessage = "E-mail verified and user added";
                 });

@@ -108,7 +108,7 @@ class _ListStaffEventState extends State<ListStaffEvent> {
     for (int i = 0; i < widget.events_list.length; ++i) {
       final_list.add(AEvent(widget.events_list[i]['eventname'], widget.events_list[i]['imageurl'], widget.events_list[i]['timestamp'].toString(), widget.user_json, widget.events_list[i]['eventdescription'], widget.events_list[i]['phone'], widget.events_list[i]['id']));
     }
-    print(final_list);
+    // print(final_list);
     return Column(
       children: final_list,
     );

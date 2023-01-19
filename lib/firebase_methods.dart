@@ -30,7 +30,7 @@ class FirebaseMethods {
       });
       return events;
     }).catchError((error) {
-      print("Failed to retrieve events: $error");
+      // print("Failed to retrieve events: $error");
     });
   }
 
@@ -47,7 +47,7 @@ class FirebaseMethods {
       }
       return users;
     }).catchError((error) {
-      print("Failed to retrieve users: $error");
+      // print("Failed to retrieve users: $error");
     });
   }
 
@@ -64,7 +64,7 @@ class FirebaseMethods {
       }
       return circulars;
     }).catchError((error) {
-      print("Failed to retrieve circulars: $error");
+      // print("Failed to retrieve circulars: $error");
     });
   }
 
@@ -73,10 +73,10 @@ class FirebaseMethods {
     CollectionReference userProfile =
         FirebaseFirestore.instance.collection('profile');
     return userProfile.doc(userJson['email']).set(userJson).then((value) {
-      print("User Added");
+      // print("User Added");
       return true;
     }).catchError((error) {
-      print("Failed to add user: $error");
+      // print("Failed to add user: $error");
       return false;
     });
   }
@@ -85,10 +85,8 @@ class FirebaseMethods {
     CollectionReference userProfile =
         FirebaseFirestore.instance.collection('recruit');
     return userProfile.doc(userJson['club']).set(userJson).then((value) {
-      print("Recruit Added");
       return true;
     }).catchError((error) {
-      print("Failed to add recruit: $error");
       return false;
     });
   }
@@ -97,10 +95,8 @@ class FirebaseMethods {
     CollectionReference userProfile =
         FirebaseFirestore.instance.collection('club_application');
     return userProfile.doc(val['club'] + '_' + val['email']).set(val).then((value) {
-      print("Applied club");
       return true;
     }).catchError((error) {
-      print("Failed to apply: $error");
       return false;
     });
   }
@@ -109,10 +105,8 @@ class FirebaseMethods {
     CollectionReference userProfile =
         FirebaseFirestore.instance.collection('event_application');
     return userProfile.doc(val['club'] + '_' + val['email']).set(val).then((value) {
-      print("Applied club");
       return true;
     }).catchError((error) {
-      print("Failed to apply: $error");
       return false;
     });
   }
@@ -126,7 +120,7 @@ class FirebaseMethods {
         .update({attribute: value}).then((value) {
       return true;
     }).catchError((error) {
-      print("Failed to update user profile: $error");
+      // print("Failed to update user profile: $error");
       return false;
     });
   }
@@ -138,7 +132,7 @@ class FirebaseMethods {
         .doc(documentId)
         .update({'clubs': FieldValue.arrayUnion([newClub])});
   } catch (e) {
-    print(e.toString());
+    // print(e.toString());
   }
 }
 
@@ -147,10 +141,10 @@ class FirebaseMethods {
     CollectionReference circularCollectionRef =
         FirebaseFirestore.instance.collection('circular');
     return circularCollectionRef.add(circularJson).then((value) {
-      print('Circular Added');
+      // print('Circular Added');
       return true;
     }).catchError((error) {
-      print("Failed to add circular: $error");
+      // print("Failed to add circular: $error");
       return false;
     });
   }
@@ -162,10 +156,10 @@ class FirebaseMethods {
     return circularCollection
         .doc(imgLink)
         .update({attribute: value}).then((value) {
-      print("Circular Updated!");
+      // print("Circular Updated!");
       return true;
     }).catchError((error) {
-      print("Failed to update circular: $error");
+      // print("Failed to update circular: $error");
       return false;
     });
   }
@@ -175,10 +169,10 @@ class FirebaseMethods {
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
     return eventCollection.add(eventJson).then((value) {
-      print("Event Added");
+      // print("Event Added");
       return true;
     }).catchError((error) {
-      print("Failed to add event: $error");
+      // print("Failed to add event: $error");
       return false;
     });
   }
@@ -202,7 +196,7 @@ class FirebaseMethods {
         faculty_img_flag[0] = true;
       }
     } catch (e) {
-      print('Failed to pick image: $e');
+      // print('Failed to pick image: $e');
     }
   }
 
@@ -215,10 +209,10 @@ class FirebaseMethods {
       UploadTask uploadTask = storageReference.child('filesurl/').putFile(imageTemp);
 
       circularurl = await (await uploadTask).ref.getDownloadURL();
-      print(circularurl);
+      // print(circularurl);
       circular_img_flag[0] = true;
     }  catch(e) {
-      print('Failed to pick image: $e');
+      // print('Failed to pick image: $e');
     }
   }
 
@@ -233,7 +227,7 @@ class FirebaseMethods {
       eventurl = await (await uploadTask).ref.getDownloadURL();
       club_img_flag[0] = true;
     }  catch(e) {
-      print('Failed to pick image: $e');
+      // print('Failed to pick image: $e');
     }
   }
 
@@ -242,10 +236,10 @@ class FirebaseMethods {
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
     return eventCollection.doc(title).update({attribute: value}).then((value) {
-      print("Event Updated!");
+      // print("Event Updated!");
       return true;
     }).catchError((error) {
-      print("Failed to update event: $error");
+      // print("Failed to update event: $error");
       return false;
     });
   }
@@ -254,10 +248,10 @@ class FirebaseMethods {
     CollectionReference eventCollection =
         FirebaseFirestore.instance.collection('events');
     return eventCollection.doc(title).delete().then((value) {
-      print("Event Deleted");
+      // print("Event Deleted");
       return true;
     }).catchError((error) {
-      print("Cannot delete event $error");
+      // print("Cannot delete event $error");
       return false;
     });
   }
@@ -266,10 +260,10 @@ class FirebaseMethods {
     CollectionReference userCollection =
         FirebaseFirestore.instance.collection('profile');
     return userCollection.doc(mail).delete().then((value) {
-      print("User Deleted");
+      // print("User Deleted");
       return true;
     }).catchError((error) {
-      print("Cannot delete user $error");
+      // print("Cannot delete user $error");
       return false;
     });
   }
@@ -278,10 +272,10 @@ class FirebaseMethods {
     CollectionReference circularCollection =
         FirebaseFirestore.instance.collection('circular');
     return circularCollection.doc(imgLink).delete().then((value) {
-      print("Circular Deleted");
+      // print("Circular Deleted");
       return true;
     }).catchError((error) {
-      print("Cannot delete circular $error");
+      // print("Cannot delete circular $error");
       return false;
     });
   }
@@ -366,7 +360,7 @@ class FirebaseMethods {
     for (var doc in docs) {
       await doc.reference.delete();
     }
-    print('Deleted all recruits of club $clubName');
+    // print('Deleted all recruits of club $clubName');
     deleteClubApplications(clubName);
   }
 
@@ -377,9 +371,9 @@ class FirebaseMethods {
       querySnapshot.docs.forEach((document) async {
         await document.reference.delete();
       });
-      print('Successfully');
+      // print('Successfully');
     } catch (e) {
-      print('Error deleting club_application documents: $e');
+      // print('Error deleting club_application documents: $e');
     }
   }
 
@@ -396,12 +390,12 @@ class FirebaseMethods {
       if (profile.docs.isNotEmpty) {
         DocumentReference profileDoc = profile.docs[0].reference;
         profileDoc.update({'activated': true});
-        print("Profile with email $email activated successfully");
+        // print("Profile with email $email activated successfully");
       } else {
-        print("No profile found with email $email");
+        // print("No profile found with email $email");
       }
     } catch (e) {
-      print("Error activating profile: $e");
+      // print("Error activating profile: $e");
     }
   }
 }

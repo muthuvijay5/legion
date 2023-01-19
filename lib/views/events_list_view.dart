@@ -23,8 +23,6 @@ class _EventsListViewState extends State<EventsListView> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             dynamic events_list = snapshot.data;
-            print(events_list[0]['timestamp']);
-            print(events_list);
             return EventsPage(events_list, widget.user_json);
           default:
             return const LoadingView();
@@ -83,7 +81,6 @@ class _ListEventsState extends State<ListEvents> {
     for (int i = 0; i < widget.events_list.length; ++i) {
       final_list.add(AEvent(widget.events_list[i]['eventname'], widget.events_list[i]['imageurl'], widget.events_list[i]['timestamp'], widget.user_json, widget.events_list[i]['eventdescription'], widget.events_list[i]['phone']));
     }
-    print(final_list);
     return Column(
       children: final_list,
     );

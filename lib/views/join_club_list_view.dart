@@ -81,7 +81,7 @@ class _ListJoinClubState extends State<ListJoinClub> {
     for (int i = 0; i < widget.join_club_list.length; ++i) {
       final_list.add(AEvent(widget.join_club_list[i]['club'], widget.user_json, widget.join_club_list[i]['description']));
     }
-    print(final_list);
+    // print(final_list);
     return Column(
       children: final_list,
     );

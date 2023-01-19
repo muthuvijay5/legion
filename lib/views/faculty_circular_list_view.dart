@@ -108,7 +108,7 @@ class _FacultyListCircularsState extends State<FacultyListCirculars> {
     for (int i = 0; i < widget.circular_list.length; ++i) {
       final_list.add(AFacultyCircular(widget.circular_list[i]['name'], widget.circular_list[i]['imageurl'], widget.circular_list[i]['timestamp'].toString(), widget.circular_list[i]['id'], widget.user_json));
     }
-    print(final_list);
+    // print(final_list);
     return Column(
       children: final_list,
     );

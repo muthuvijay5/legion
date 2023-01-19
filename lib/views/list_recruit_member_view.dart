@@ -107,7 +107,7 @@ class _ListApplicationsState extends State<ListApplications> {
     for (int i = 0; i < widget.applied_list.length; ++i) {
       final_list.add(AApplication(widget.applied_list[i]['email'], widget.user_json));
     }
-    print(final_list);
+    // print(final_list);
     return Column(
       children: final_list,
     );

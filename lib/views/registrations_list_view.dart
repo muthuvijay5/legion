@@ -81,7 +81,7 @@ class _ListApplicationsState extends State<ListApplications> {
     for (int i = 0; i < widget.inactive_list.length; ++i) {
       final_list.add(AApplication(widget.inactive_list[i], widget.email));
     }
-    print(final_list);
+    // print(final_list);
     return Column(
       children: final_list,
     );

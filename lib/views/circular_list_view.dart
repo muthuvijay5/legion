@@ -23,8 +23,6 @@ class _CircularListViewState extends State<CircularListView> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             dynamic circular_list = snapshot.data;
-            print(circular_list[0]['timestamp']);
-            print(circular_list);
             return CircularPage(circular_list, widget.user_json);
           default:
             return const LoadingView();
@@ -83,7 +81,6 @@ class _ListCircularsState extends State<ListCirculars> {
     for (int i = 0; i < widget.circular_list.length; ++i) {
       final_list.add(ACircular(widget.circular_list[i]['name'], widget.circular_list[i]['imageurl'], widget.circular_list[i]['timestamp'], widget.user_json));
     }
-    print(final_list);
     return Column(
       children: final_list,
     );

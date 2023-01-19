@@ -347,8 +347,8 @@ class _RegisterViewStaffState extends State<RegisterViewStaff> {
                 builder: (context) => VerifyAndAddUser(),
               ),
             );
-                          print(data);
-                          print("Validate");
+                          // print(data);
+                          // print("Validate");
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             showDialog(

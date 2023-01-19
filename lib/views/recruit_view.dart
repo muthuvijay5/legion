@@ -230,7 +230,7 @@ class _RecruitPageState extends State<RecruitPage> {
                       final_data['club'] = widget.user_json['club'];
                       final_data['description'] = data['desc'];
                       final_data['for'] = for_map;
-                      print(final_data);
+                      // print(final_data);
                       try {
                         database_functions.createRecruit(final_data);
                         Navigator.pushReplacement(
