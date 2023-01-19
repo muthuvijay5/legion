@@ -327,13 +327,40 @@ class _RegisterViewFacultyState extends State<RegisterViewFaculty> {
                         }
                       }
                       
-                      else {
+                      else if (faculty_img_flag[0] == false) {
                         showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
                                   title: const Text("No Profile Image"),
                                   content: const Text(
                                       "You haven't chosen any profile image"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop();
+                                      },
+                                      child: Container(
+                                        color: Colors.blue,
+                                        padding: const EdgeInsets.all(14),
+                                        child: const Text(
+                                          "Okay",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                      }
+                      else {
+                        showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text("Invalid Input(s)!"),
+                                  content: const Text(
+                                      "Please provide inputs in the correct format"),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () {
